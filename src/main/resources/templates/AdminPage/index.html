@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text=${namePage}></title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+<link th:insert="~{AdminPage/fragment::bootstrap1}" />
+<script th:insert="~{AdminPage/fragment::bootstrap2}"></script>
+<script th:insert="~{AdminPage/fragment::bootstrap3}"></script>
+<script th:insert="~{AdminPage/fragment::bootstrap4}"></script>
+<link th:insert="~{AdminPage/fragment::fontawesome}" />
+<link th:insert="~{AdminPage/fragment::jquery}" />
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-2"
+				style="background-color: #F8F3F0; min-height: 100vh;">
+				<div class="row">
+					<div class="p-4">
+						<img th:src="@{/logo.png}" alt="Logo" style="width: 200px;">
+					</div>
+					<div class="list-group py-3 text-capitalize"
+						style="padding-left: 27px;">
+						<a th:href="@{/adminPage/next(namePage='overview')}"
+							class="list-group-item list-group-item-action">Overview</a> 
+						<a th:href="@{/adminPage/next(namePage='addproduct')}"
+							class="list-group-item list-group-item-action">Add Product</a> 
+						<a th:href="@{/adminPage/next(namePage='table')}"
+							class="list-group-item list-group-item-action">Users management</a> 
+						<a th:href="@{/listproducts(namePage='products',papa='222')}"
+							class="list-group-item list-group-item-action">Product managerment</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-10">
+				<div class="row" style="height: 50px; background-color: black;">
+					<div class="col">
+						<h1 class="text-center" style="line-height: 50px; color: #3edbf0;">Admin
+							Page</h1>
+					</div>
+				</div>
+				<div class="row mb-3 d-flex justify-content-between"
+					style="height: 50px; background-color: #F8F3F0">
+					<h4 style="line-height: 50px; text-transform: uppercase;"
+						th:text=${namePage}></h4>
+					<a href="/logout" class="fa-solid fa-right-from-bracket text-dark"
+						style="line-height: 50px; font-size: 20px; text-decoration: none; margin-right: 20px"></a>
+				</div>
+				<div class="row d-flex justify-content-center"
+					style="background-color: #fff;">
+					<th:block th:switch="${namePage}">
+						<div th:case="'overview'" style="width: 100%;">
+							<div
+								th:replace="~{AdminPage/fragment::overview(allUsers=${allUsers},allProducts=${allProducts})}">
+							</div>
+						</div>
+						<div th:case="'products'">
+							<div th:replace="~{AdminPage/fragment::products}"></div>
+						</div>
+						<div th:case="'list users'">
+							<div th:replace="~{AdminPage/fragment::listusers}"></div>
+						</div>
+						<div th:case="'add product'" style="width: 100%;">
+							<div th:replace="~{AdminPage/fragment::addproduct}"></div>
+						</div>
+						<div th:case="'tablet'" style="width: 100%;">
+							<div th:replace="~{AdminPage/fragment::tablet}"></div>
+						</div>
+					</th:block>
+				</div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">	
+	$(document).ready(function(){
+	    $('#image1').change(function(){
+	        $("#frame1").html('');
+	    	$("#frame1").append('<img src="'+window.URL.createObjectURL(this.files[0])+
+	            			'"width="200px" height="200px"/>');
+	    });    
+	    
+	    $('#image').change(function(){
+	    	$('#submit').prop('disabled', false);
+	        $("#frames").html('');
+	    	if($(this)[0].files.length > 4){
+	    		$("#frames").append('<span class="text-danger">Số lượng ảnh không vượt quá 4</span>');
+	    		$('#submit').prop('disabled', true);
+	    	}else{
+	        	for (var i = 0; i < $(this)[0].files.length; i++) {
+	            	$("#frames").append('<img class="items" src="'+window.URL.createObjectURL(this.files[i])+
+	            			'"width="200px" height="200px"/>');
+	            	$(".items").css({"margin-top":"10px","margin-bottom":"15px"});
+	        	}
+	    	}
+	    });    
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Đăng ký</title>
+<link th:insert="~{AdminPage/fragment::bootstrap1}"/>
+<script type="text/javascript">
+	function checkPasscfm(){
+		let password = document.getElementById("password").value;
+		let passwordcfm = document.getElementById("passwordcfm").value;
+		let message = document.getElementById("message");
+		
+		if(password != passwordcfm){
+			message.textContent = "Nhập lại mật khẩu không khớp";
+			event.preventDefault();
+		}
+	}
+</script>
+</head>
+<body>
+	<div class="container">
+		<div class="row d-flex justify-content-center">
+			<form class="col-md-5 mt-5" action="#" method="post"
+				th:action="@{/register}" th:object="${registerrequest}">
+				<h2 class="text-center">Đăng ký</h2>
+				<div class="form-group">
+					<label for="exampleInputEmail1">Tên của bạn:</label> <input
+						type="text" class="form-control" id="exampleInputEmail1"
+						aria-describedby="emailHelp" placeholder="Nhập tên"
+						th:field="*{username}" required> 
+					<div th:if="${#fields.hasErrors('username')}"
+						th:errors="*{username}" style="color: red;"></div>
+
+				</div>
+				<div class="form-group">
+					<label for="exampleInputEmail1">Địa chỉ Email:</label> <input
+						type="email" class="form-control" id="exampleInputEmail1"
+						aria-describedby="emailHelp" placeholder="Nhập địa chỉ Email"
+						th:field="*{email}" required>
+					<div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+						style="color: red;"></div>
+				</div>
+				<div class="form-group">
+					<label for="exampleInputPassword1">Mật khẩu:</label> <input
+						type="password" class="form-control" id="password"
+						placeholder="Nhập mật khẩu" name="up" th:field="*{password}" required>
+					<div th:if="${#fields.hasErrors('password')}"
+						th:errors="*{password}" style="color: red;"></div>
+				</div>
+				<div class="form-group">
+					<label for="exampleInputPassword1">Nhập lại mật khẩu:</label> <input
+						type="password" class="form-control" id="passwordcfm"
+						placeholder="Nhập mật khẩu" required name="up2">
+					<div id="message" style="color: red;"></div>
+				</div>
+				<div class="form-group">
+					<label for="exampleInputPassword2">Nhập số điện thoại:</label> <input
+						type="text" class="form-control" id="sdt"
+						placeholder="Nhập số điện thoại" th:field="*{phone}" required>
+					<div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
+						style="color: red;"></div>
+				</div>
+				<div class="form-group">
+					<label for="exampleInputPassword1">Nhập địa chỉ:</label> <input
+						type="text" class="form-control" id="exampleInputPassword1"
+						placeholder="Nhập địa chỉ" th:field="*{address}" required>
+					<div th:if="${#fields.hasErrors('address')}" th:errors="*{address}"
+						style="color: red;"></div>
+				</div>
+				<div th:text="${messageError}" style="color: red;"></div>
+				<div th:text="${messageSuccess}" style="color: green;"></div>
+				<div class="d-flex justify-content-between">
+					<button type="submit" class="btn btn-primary" onclick="checkPasscfm()">Đăng
+						ký</button>
+					<a href="/login" class="btn btn-primary">Đăng nhập</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
