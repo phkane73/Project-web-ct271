@@ -14,6 +14,9 @@ public interface IProductService {
 	//Thêm một sản phẩm mới
 	public Product addProduct(Product product);
 	
+	//Xóa sản phẩm
+	public boolean deleteProduct(Long id);
+	
 	//Lấy ra 1 sản phẩm
 	public Optional<Product> getProduct(Long id);
 	
@@ -28,4 +31,7 @@ public interface IProductService {
 	
 	//Lấy ra số product
 	public long getTotalElement();
+	
+	//Chỉnh sửa sản phẩm
+	public Product updateProduct(Long id, Product newProduct);
 }

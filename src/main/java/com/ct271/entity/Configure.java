@@ -61,6 +61,38 @@ public class Configure {
 		this.backCamera = backCamera;
 		this.pin = pin;
 	}
+	
+	//Các configure cho Smartwatch
+	public Configure(String screen, String timeContinuousUse, String connectWithOS) {
+		super();
+		this.screen = screen;
+		this.timeContinuousUse = timeContinuousUse;
+		this.connectWithOS = connectWithOS;
+	}
+	
+	//Các configure cho Earphone
+	public Configure(String connectWithOS, String timeEarPhone, String timeChargeBox, String chargePort,
+			String connectSupport) {
+		super();
+		this.connectWithOS = connectWithOS;
+		this.timeEarPhone = timeEarPhone;
+		this.timeChargeBox = timeChargeBox;
+		this.chargePort = chargePort;
+		this.connectSupport = connectSupport;
+	}
+	
+	//Các configure cho Laptop
+	public Configure(String cpu, String ram, String hardDrive, String screen, String os, String weight,
+			String screenCard) {
+		super();
+		this.cpu = cpu;
+		this.ram = ram;
+		this.hardDrive = hardDrive;
+		this.screen = screen;
+		this.os = os;
+		this.weight = weight;
+		this.screenCard = screenCard;
+	}
 
 	public Long getId() {
 		return id;

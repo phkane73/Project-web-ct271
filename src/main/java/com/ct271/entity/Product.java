@@ -23,8 +23,8 @@ public class Product {
 	@Column(name = "product_id")
 	private Long id;
 	private String productName;
-	private int price;
-	private int number;
+	private String price;
+	private String number;
 	private String brand;
 	private String categoryName;
 	private String imageProductInfor;
@@ -42,7 +42,7 @@ public class Product {
 		super();
 	}
 
-	public Product(String productName, int price, int number, String brand, String categoryName,
+	public Product(String productName, String price, String number, String brand, String categoryName,
 			String imageProductInfor, Configure configure, Set<ProductImage> productImages) {
 		super();
 		this.productName = productName;
@@ -71,19 +71,19 @@ public class Product {
 		this.productName = productName;
 	}
 
-	public int getPrice() {
+	public String getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
 
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
 
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 
@@ -125,5 +125,5 @@ public class Product {
 
 	public void setProductImages(Set<ProductImage> productImages) {
 		this.productImages = productImages;
-	}
+	}	
 }

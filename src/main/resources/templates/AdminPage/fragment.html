@@ -1,32 +1,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-	crossorigin="anonymous" th:fragment="bootstrap1">
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-	crossorigin="anonymous" th:fragment="bootstrap2"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
-	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-	crossorigin="anonymous" th:fragment="bootstrap3"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-	crossorigin="anonymous" th:fragment="bootstrap4"></script>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-	th:fragment="fontawesome" />
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
-	th:fragment="jquery"></script>
 </head>
 <body>
 	<div th:fragment="overview (allUsers)(allProducts)">
 		<div class="container-fluid">
 			<div class="row justify-content-around my-5 py-5">
-				<a href="/adminPage/page" class="col-md-3 card text-center"
+				<a href="/adminPage/page?p=0" class="col-md-3 card text-center"
 					style="background-color: #F8F3F0; height: 300px; text-decoration: none">
 					<i class="fa-solid fa-user py-5 text-dark"
 					style="font-size: 100px;"></i>
@@ -34,7 +13,7 @@
 						<h3 class="card-title text-dark">Total User</h3>
 						<h4 th:text="${allUsers}" class="text-dark"></h4>
 					</div>
-				</a> <a th:href="@{/listproducts(namePage='products')}"
+				</a> <a href="/listproducts?namePage=products&p=0"
 					class="col-md-3 card text-center text-dark"
 					style="background-color: #F8F3F0; height: 300px; text-decoration: none">
 					<i class="fa-solid fa-suitcase py-5" style="font-size: 100px;"></i>
@@ -63,7 +42,7 @@
 					<p class="card-text text-center" style="margin: 27px 0 0 0">
 						<i class="fa-solid fa-laptop p-3" style="font-size: 88px;"></i>
 					</p>
-					<a href="#" class="btn btn-dark"
+					<a href="/product/category?namePage=laptop" class="btn btn-dark"
 						style="width: 245px; color: #3edbf0">Add Laptop</a>
 				</div>
 			</div>
@@ -73,7 +52,7 @@
 						<img alt="" th:src="@{/smartwatch.svg}"
 							style="width: 100px; height: 100px; margin-top: 20px; margin-bottom: 10px">
 					</p>
-					<a href="#" class="btn btn-dark"
+					<a href="/product/category?namePage=smartwatch" class="btn btn-dark"
 						style="width: 245px; color: #3edbf0">Add SmartWatch</a>
 				</div>
 			</div>
@@ -82,7 +61,7 @@
 					<p class="card-text text-center">
 						<i class="fa-solid fa-headphones" style="font-size: 88px;"></i>
 					</p>
-					<a href="#" class="btn btn-dark"
+					<a href="/product/category?namePage=earphone" class="btn btn-dark"
 						style="width: 245px; color: #3edbf0">Add Earphone</a>
 				</div>
 			</div>
@@ -113,7 +92,6 @@
 						<th style="color: #3edbf0" class="text-center">Loại sản phẩm</th>
 						<th style="color: #3edbf0" class="text-center">Ảnh</th>
 						<th style="color: #3edbf0" class="text-center">Action</th>
-
 					</tr>
 				</thead>
 				<tbody>
@@ -134,26 +112,55 @@
 						<td><img
 							th:src="@{'./images/' + ${p.id} + '/infor/' + ${p.imageProductInfor}}"
 							style="width: 100px; height: 100px;" /></td>
-						<td style="padding-top: 40px"><a href=""
-							class="btn btn-primary">Sửa</a> <a href="" class="btn btn-danger">Xóa</a>
-						</td>
+						<td style="padding-top: 40px"><a
+							th:href="@{/listproducts/update(namePage=${p.categoryName},id=${p.id})}"
+							class="btn btn-primary">Sửa</a>
+							<button class="btn btn-danger delete" data-toggle="modal"
+								data-target="#myModal" th:data-id="${p.id}">Xóa</button>
+							<div id="myModal" class="modal fade" role="dialog">
+								<div class="modal-dialog" role="document">
+									<!-- Modal content-->
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal">&times;</button>
+											<h4 class="modal-title"></h4>
+										</div>
+										<div class="modal-body">
+											<p>Bạn có chắc muốn xóa sản phẩm này không?</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary"
+												data-dismiss="modal">Cancel</button>
+											<a class="btn btn-danger submit">Yes</a>
+										</div>
+									</div>
+								</div>
+							</div></td>
 					</tr>
 				</tbody>
 			</table>
 			<span th:text="'Total rows:' + ' ' + ${allProducts}"></span>
 			<nav aria-label="Page navigation example"
-				th:unless="(${listProducts.getTotalPages()}==1)">
+				th:unless="(${listProducts.getTotalPages()}<=1)">
 				<ul class="pagination justify-content-end">
-					<th:block>
-						<li class="page-item" th:each="page : ${numberPage}"><a
-							class="page-link text-dark"
-							th:href="@{/listproducts(namePage='products',p=${page})}"
-							th:text="${page}" th:unless="${page == 0}"></a> <a
-							class="page-link text-dark"
-							href="/listproducts?namePage=products&p=0" th:if="${page == 0}">First</a></li>
+					<li class="page-item"><a class="page-link text-dark"
+						th:href="@{/listproducts(namePage='products',p=${currentPage}-1)}"
+						th:if="${currentPage>0}"><i class="fa-solid fa-angles-left"></i></a>
+					</li>
+					<th:block th:each="page : ${numberPage}">
+						<li class="page-item"><a class="page-link text-dark"
+							th:href="@{/listproducts(namePage='products',p=${page})}" th:text="${page}"
+							th:if="${page>0}"></a> <a class="page-link text-dark"
+							th:href="@{/listproducts(namePage='products',p=${page})}" th:if="${page==0}">First</a>
+						</li>
 					</th:block>
 					<li class="page-item"><a class="page-link text-dark"
-						th:href="@{/listproducts(namePage='products',p=${listProducts.getTotalPages()-1})}">Last</a></li>
+						th:href="@{/listproducts(namePage='products',p=${listProducts.getTotalPages()-1})}">Last</a>
+					</li>
+					<li class="page-item"><a class="page-link text-dark"
+						th:href="@{/listproducts(namePage='products',p=${currentPage}+1)}"
+						th:unless="${currentPage} == ${listProducts.getTotalPages()-1}"> <i
+							class="fa-solid fa-angles-right"></i></a></li>
 				</ul>
 			</nav>
 		</div>
@@ -183,22 +190,31 @@
 		</table>
 		<span th:text="'Total rows:' + ' ' + ${alluser}"></span>
 		<nav aria-label="Page navigation example"
-			th:unless="(${listUser.getTotalPages()}==1)">
+			th:unless="(${listUser.getTotalPages()}<=1)">
 			<ul class="pagination justify-content-end">
-				<th:block>
-					<li class="page-item" th:each="page : ${numberPage}"><a
-						class="page-link text-dark"
+				<li class="page-item"><a class="page-link text-dark"
+					th:href="@{/adminPage/page(p=${currentPage}-1)}"
+					th:if="${currentPage>0}"><i class="fa-solid fa-angles-left"></i></a>
+				</li>
+				<th:block th:each="page : ${numberPage}">
+					<li class="page-item"><a class="page-link text-dark"
 						th:href="@{/adminPage/page(p=${page})}" th:text="${page}"
-						th:unless="${page == 0}"></a> <a class="page-link text-dark"
-						href="/adminPage/page?p=0" th:if="${page == 0}">First</a></li>
+						th:if="${page>0}"></a> <a class="page-link text-dark"
+						th:href="@{/adminPage/page(p=${page})}" th:if="${page==0}">First</a>
+					</li>
 				</th:block>
 				<li class="page-item"><a class="page-link text-dark"
-					th:href="@{/adminPage/page(p=${listUser.getTotalPages()-1})}">Last</a></li>
+					th:href="@{/adminPage/page(p=${listUser.getTotalPages()-1})}">Last</a>
+				</li>
+				<li class="page-item"><a class="page-link text-dark"
+					th:href="@{/adminPage/page(p=${currentPage}+1)}"
+					th:unless="${currentPage} == ${listUser.getTotalPages()-1}"> <i
+						class="fa-solid fa-angles-right"></i></a></li>
 			</ul>
 		</nav>
 	</div>
 	<div class="container my-3" th:fragment="tablet">
-		<a href="/adminPage/next?namePage=addproduct"
+		<a href="/adminPage/next?namePage=addproduct&p=0"
 			class="fa-regular fa-circle-xmark text-dark"
 			style="font-size: 35px; text-decoration: none;"></a>
 		<div class="row d-flex justify-content-center">
@@ -313,7 +329,7 @@
 				</div>
 				<div id="frame1" class="d-flex justify-content-around flex-wrap"></div>
 				<div class="form-group custom-file my-3">
-					<label class="custom-file-label">Chọn 4 ảnh chi tiết sản
+					<label class="custom-file-label">Chọn từ 2 đến 10 ảnh ảnh chi tiết sản
 						phẩm</label> <input type="file" class="form-control custom-file-input"
 						name="photos" placeholder="Enter photo" accept="image/*"
 						id="image" multiple="multiple" required>
@@ -321,6 +337,666 @@
 				<div id="frames" class="d-flex justify-content-around flex-wrap"></div>
 				<button type="submit" class="btn btn-primary" id="submit">Thêm
 					sản phẩm</button>
+			</form>
+		</div>
+	</div>
+	<div class="container my-3" th:fragment="tabletupdate">
+		<a href="/listproducts?namePage=products&p=0"
+			class="fa-regular fa-circle-xmark text-dark"
+			style="font-size: 35px; text-decoration: none;"></a>
+		<div class="row d-flex justify-content-center">
+			<form th:action="@{/listproducts/update(id=${product.getId()})}"
+				class="col-md-5" th:object="${product}" method="post" action="#"
+				enctype="multipart/form-data">
+				<h2 class="text-center">Update Tablet</h2>
+				<div class="form-group">
+					<label for="">Tên Tablet:</label> <input type="text"
+						class="form-control" th:field="*{productName}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Giá sản phẩm:</label> <input type="text"
+						class="form-control" th:field="*{price}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Màn hình:</label> <input type="text"
+						class="form-control" th:field="*{configure.screen}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Camera trước:</label> <input type="text"
+						class="form-control" th:field="*{configure.frontCamera}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Camera sau:</label> <input type="text"
+						class="form-control" th:field="*{configure.backCamera}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Chip:</label> <input type="text" class="form-control"
+						required th:field="*{configure.chip}" />
+				</div>
+				<div class="form-group">
+					<label for="">Pin:</label> <input type="text" class="form-control"
+						required th:field="*{configure.pin}" />
+				</div>
+				<div class="form-group">
+					<label for="">Chọn hệ điều hành:</label>
+					<div class="d-flex justify-content-around">
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="customRadio"
+								name="radio" value="Android" th:field="*{configure.os}">
+							<label class="custom-control-label" for="customRadio">Android</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input"
+								id="customRadio2" name="radio" value="iPadOS"
+								th:field="*{configure.os}"> <label
+								class="custom-control-label" for="customRadio2">iPadOS</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="">Số lượng:</label> <input type="text"
+						class="form-control" th:field="*{number}" style="width: 150px" />
+				</div>
+				<div class="form-group d-flex flex-column">
+					<label for="">Dung lượng lữu trữ:</label> <select name="diskSpace"
+						th:field="*{configure.diskSpace}"
+						class="custom-select custom-select-md" style="width: 150px">
+						<option th:each="d : ${diskSpaceList}" th:value="${d}"
+							th:text="${d}" />
+					</select>
+				</div>
+				<div class="form-group d-flex flex-column">
+					<label for="">Hãng sản xuất:</label> <select name="cars"
+						th:field="*{brand}" class="custom-select custom-select-md"
+						style="width: 250px">
+						<option th:each="b : ${brandList}" th:value="${b}" th:text="${b}" />
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="">Ram:</label>
+					<div class="d-flex justify-content-around">
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram1"
+								name="ram" value="4GB" th:field="*{configure.ram}"><label
+								class="custom-control-label" for="ram1">4GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram2"
+								name="ram" value="8GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram2">8GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram3"
+								name="ram" value="16GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram3">16GB</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="">Sim:</label>
+					<div class="d-flex justify-content-around">
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="sim1"
+								name="sim" value="có sim" th:field="*{configure.sim}"> <label
+								class="custom-control-label" for="sim1">Có sim</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="sim2"
+								name="sim" value="không có sim" th:field="*{configure.sim}">
+							<label class="custom-control-label" for="sim2">Không có
+								sim</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn 1 ảnh đại diện sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="imageInfor" placeholder="Enter photo" accept="image/*"
+						id="image1">
+				</div>
+				<div id="frame1" class="d-flex justify-content-around flex-wrap">
+					<img th:src="@{'../images/' + ${product.getId()} + '/infor/' + ${product.getImageProductInfor()}}" 
+					alt="" style="width:200px; height:200px"/>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn từ 2 đến 10 ảnh chi tiết sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="photos" placeholder="Enter photo" accept="image/*"
+						id="image" multiple="multiple">
+				</div>
+				<div id="frames" class="d-flex justify-content-around flex-wrap">
+					<th:block th:each="p : ${product.getProductImages()}">
+						<img th:src="@{'../images/' + ${product.getId()} + '/' + ${p.getImage()}}"
+						 alt="" style="width:200px; height:200px; margin-bottom: 15px; margin-top: 10px"/>
+					</th:block>
+				</div>
+				<button type="submit" class="btn btn-primary" id="submit">Chỉnh
+					sửa sản phẩm</button>
+			</form>
+		</div>
+	</div>
+	<div class="container my-3" th:fragment="laptop">
+		<a href="/adminPage/next?namePage=addproduct&p=0"
+			class="fa-regular fa-circle-xmark text-dark"
+			style="font-size: 35px; text-decoration: none;"></a>
+		<div class="row d-flex justify-content-center">
+			<form th:action="@{/product/category?namePage=laptop}"
+				class="col-md-5" th:object="${product}" method="post" action="#"
+				enctype="multipart/form-data">
+				<h2 class="text-center">Add Laptop</h2>
+				<div class="form-group">
+					<label for="">Tên Laptop:</label> <input type="text"
+						class="form-control" th:field="*{productName}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Giá sản phẩm:</label> <input type="text"
+						class="form-control" th:field="*{price}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Màn hình:</label> <input type="text"
+						class="form-control" th:field="*{configure.screen}" required />
+				</div>
+				<div class="form-group">
+					<label for="">CPU:</label> <input type="text"
+						class="form-control" th:field="*{configure.cpu}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Ổ cứng:</label> <input type="text"
+						class="form-control" th:field="*{configure.hardDrive}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Khối lượng:</label> <input type="text" class="form-control"
+						required th:field="*{configure.weight}" />
+				</div>
+				<div class="form-group">
+					<label for="">Card màn hình:</label> <input type="text" class="form-control"
+						required th:field="*{configure.screenCard}" />
+				</div>
+				<div class="form-group">
+					<label for="">Chọn hệ điều hành:</label>
+					<div class="d-flex justify-content-around">
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="customRadio"
+								name="radio" value="Windows" th:field="*{configure.os}">
+							<label class="custom-control-label" for="customRadio">Windows</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input"
+								id="customRadio2" name="radio" value="MacOS"
+								th:field="*{configure.os}"> <label
+								class="custom-control-label" for="customRadio2">MacOS</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="">Số lượng:</label> <input type="text"
+						class="form-control" th:field="*{number}" style="width: 150px" />
+				</div>
+				<div class="form-group d-flex flex-column">
+					<label for="">Hãng sản xuất:</label> <select name="cars"
+						th:field="*{brand}" class="custom-select custom-select-md"
+						style="width: 250px">
+						<option th:each="b : ${brandList}" th:value="${b}" th:text="${b}" />
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="">Ram:</label>
+					<div class="d-flex justify-content-around">
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram1"
+								name="ram" value="4GB" th:field="*{configure.ram}"><label
+								class="custom-control-label" for="ram1">4GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram2"
+								name="ram" value="8GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram2">8GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram3"
+								name="ram" value="16GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram3">16GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram4"
+								name="ram" value="32GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram4">32GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram5"
+								name="ram" value="64GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram5">64GB</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn 1 ảnh đại diện sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="imageInfor" placeholder="Enter photo" accept="image/*"
+						id="image1" required>
+				</div>
+				<div id="frame1" class="d-flex justify-content-around flex-wrap"></div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn từ 2 đến 10 ảnh chi tiết sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="photos" placeholder="Enter photo" accept="image/*"
+						id="image" multiple="multiple" required>
+				</div>
+				<div id="frames" class="d-flex justify-content-around flex-wrap"></div>
+				<button type="submit" class="btn btn-primary" id="submit">Thêm
+					sản phẩm</button>
+			</form>
+		</div>
+	</div>
+	<div class="container my-3" th:fragment="laptopupdate">
+		<a href="/listproducts?namePage=products&p=0"
+			class="fa-regular fa-circle-xmark text-dark"
+			style="font-size: 35px; text-decoration: none;"></a>
+		<div class="row d-flex justify-content-center">
+			<form th:action="@{/listproducts/update(id=${product.getId()})}"
+				class="col-md-5" th:object="${product}" method="post" action="#"
+				enctype="multipart/form-data">
+				<h2 class="text-center">Update Laptop</h2>
+				<div class="form-group">
+					<label for="">Tên Laptop:</label> <input type="text"
+						class="form-control" th:field="*{productName}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Giá sản phẩm:</label> <input type="text"
+						class="form-control" th:field="*{price}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Màn hình:</label> <input type="text"
+						class="form-control" th:field="*{configure.screen}" required />
+				</div>
+				<div class="form-group">
+					<label for="">CPU:</label> <input type="text"
+						class="form-control" th:field="*{configure.cpu}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Ổ cứng:</label> <input type="text"
+						class="form-control" th:field="*{configure.hardDrive}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Khối lượng:</label> <input type="text" class="form-control"
+						required th:field="*{configure.weight}" />
+				</div>
+				<div class="form-group">
+					<label for="">Card màn hình:</label> <input type="text" class="form-control"
+						required th:field="*{configure.screenCard}" />
+				</div>
+				<div class="form-group">
+					<label for="">Chọn hệ điều hành:</label>
+					<div class="d-flex justify-content-around">
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="customRadio"
+								name="radio" value="Windows" th:field="*{configure.os}">
+							<label class="custom-control-label" for="customRadio">Windows</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input"
+								id="customRadio2" name="radio" value="MacOS"
+								th:field="*{configure.os}"> <label
+								class="custom-control-label" for="customRadio2">MacOS</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="">Số lượng:</label> <input type="text"
+						class="form-control" th:field="*{number}" style="width: 150px" />
+				</div>
+				<div class="form-group d-flex flex-column">
+					<label for="">Hãng sản xuất:</label> <select name="cars"
+						th:field="*{brand}" class="custom-select custom-select-md"
+						style="width: 250px">
+						<option th:each="b : ${brandList}" th:value="${b}" th:text="${b}" />
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="">Ram:</label>
+					<div class="d-flex justify-content-around">
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram1"
+								name="ram" value="4GB" th:field="*{configure.ram}"><label
+								class="custom-control-label" for="ram1">4GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram2"
+								name="ram" value="8GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram2">8GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram3"
+								name="ram" value="16GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram3">16GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram4"
+								name="ram" value="32GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram4">32GB</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="ram5"
+								name="ram" value="64GB" th:field="*{configure.ram}"> <label
+								class="custom-control-label" for="ram5">64GB</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn 1 ảnh đại diện sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="imageInfor" placeholder="Enter photo" accept="image/*"
+						id="image1">
+				</div>
+				<div id="frame1" class="d-flex justify-content-around flex-wrap">
+					<img th:src="@{'../images/' + ${product.getId()} + '/infor/' + ${product.getImageProductInfor()}}" 
+					alt="" style="width:200px; height:200px"/>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn từ 2 đến 10 ảnh chi tiết sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="photos" placeholder="Enter photo" accept="image/*"
+						id="image" multiple="multiple">
+				</div>
+				<div id="frames" class="d-flex justify-content-around flex-wrap">
+					<th:block th:each="p : ${product.getProductImages()}">
+						<img th:src="@{'../images/' + ${product.getId()} + '/' + ${p.getImage()}}"
+						 alt="" style="width:200px; height:200px; margin-bottom: 15px; margin-top: 10px"/>
+					</th:block>
+				</div>
+				<button type="submit" class="btn btn-primary" id="submit">Chỉnh sửa sản phẩm</button>
+			</form>
+		</div>
+	</div>
+	<div class="container my-3" th:fragment="smartwatch">
+		<a href="/adminPage/next?namePage=addproduct&p=0"
+			class="fa-regular fa-circle-xmark text-dark"
+			style="font-size: 35px; text-decoration: none;"></a>
+		<div class="row d-flex justify-content-center">
+			<form th:action="@{/product/category?namePage=smartwatch}"
+				class="col-md-5" th:object="${product}" method="post" action="#"
+				enctype="multipart/form-data">
+				<h2 class="text-center">Add Smartwatch</h2>
+				<div class="form-group">
+					<label for="">Tên Smartwatch:</label> <input type="text"
+						class="form-control" th:field="*{productName}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Giá sản phẩm:</label> <input type="text"
+						class="form-control" th:field="*{price}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Màn hình:</label> <input type="text"
+						class="form-control" th:field="*{configure.screen}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Thời gian sử dụng liên tục:</label> <input type="text" class="form-control"
+						required th:field="*{configure.timeContinuousUse}" />
+				</div>
+				<div class="form-group">
+					<label for="">Kết nối được với hệ điều hành:</label> <input type="text" class="form-control"
+						required th:field="*{configure.connectWithOS}" />
+				</div>
+			
+				<div class="form-group">
+					<label for="">Số lượng:</label> <input type="text"
+						class="form-control" th:field="*{number}" style="width: 150px" />
+				</div>
+				<div class="form-group d-flex flex-column">
+					<label for="">Hãng sản xuất:</label> <select name="cars"
+						th:field="*{brand}" class="custom-select custom-select-md"
+						style="width: 250px">
+						<option th:each="b : ${brandList}" th:value="${b}" th:text="${b}" />
+					</select>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn 1 ảnh đại diện sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="imageInfor" placeholder="Enter photo" accept="image/*"
+						id="image1" required>
+				</div>
+				<div id="frame1" class="d-flex justify-content-around flex-wrap"></div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn từ 2 đến 10 ảnh chi tiết sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="photos" placeholder="Enter photo" accept="image/*"
+						id="image" multiple="multiple" required>
+				</div>
+				<div id="frames" class="d-flex justify-content-around flex-wrap"></div>
+				<button type="submit" class="btn btn-primary" id="submit">Thêm
+					sản phẩm</button>
+			</form>
+		</div>
+	</div>
+	<div class="container my-3" th:fragment="smartwatchupdate">
+		<a href="/listproducts?namePage=products&p=0"
+			class="fa-regular fa-circle-xmark text-dark"
+			style="font-size: 35px; text-decoration: none;"></a>
+		<div class="row d-flex justify-content-center">
+			<form th:action="@{/listproducts/update(id=${product.getId()})}"
+				class="col-md-5" th:object="${product}" method="post" action="#"
+				enctype="multipart/form-data">
+				<h2 class="text-center">Update Smartwatch</h2>
+				<div class="form-group">
+					<label for="">Tên Smartwatch:</label> <input type="text"
+						class="form-control" th:field="*{productName}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Giá sản phẩm:</label> <input type="text"
+						class="form-control" th:field="*{price}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Màn hình:</label> <input type="text"
+						class="form-control" th:field="*{configure.screen}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Thời gian sử dụng liên tục:</label> <input type="text" class="form-control"
+						required th:field="*{configure.timeContinuousUse}" />
+				</div>
+				<div class="form-group">
+					<label for="">Kết nối được với hệ điều hành:</label> <input type="text" class="form-control"
+						required th:field="*{configure.connectWithOS}" />
+				</div>
+			
+				<div class="form-group">
+					<label for="">Số lượng:</label> <input type="text"
+						class="form-control" th:field="*{number}" style="width: 150px" />
+				</div>
+				<div class="form-group d-flex flex-column">
+					<label for="">Hãng sản xuất:</label> <select name="cars"
+						th:field="*{brand}" class="custom-select custom-select-md"
+						style="width: 250px">
+						<option th:each="b : ${brandList}" th:value="${b}" th:text="${b}" />
+					</select>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn 1 ảnh đại diện sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="imageInfor" placeholder="Enter photo" accept="image/*"
+						id="image1">
+				</div>
+				<div id="frame1" class="d-flex justify-content-around flex-wrap">
+					<img th:src="@{'../images/' + ${product.getId()} + '/infor/' + ${product.getImageProductInfor()}}" 
+					alt="" style="width:200px; height:200px"/>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn từ 2 đến 10 ảnh chi tiết sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="photos" placeholder="Enter photo" accept="image/*"
+						id="image" multiple="multiple">
+				</div>
+				<div id="frames" class="d-flex justify-content-around flex-wrap">
+					<th:block th:each="p : ${product.getProductImages()}">
+						<img th:src="@{'../images/' + ${product.getId()} + '/' + ${p.getImage()}}"
+						 alt="" style="width:200px; height:200px; margin-bottom: 15px; margin-top: 10px"/>
+					</th:block>
+				</div>
+				<button type="submit" class="btn btn-primary" id="submit">Chỉnh sửa sản phẩm</button>
+			</form>
+		</div>
+	</div>
+	<div class="container my-3" th:fragment="earphone">
+		<a href="/adminPage/next?namePage=addproduct&p=0"
+			class="fa-regular fa-circle-xmark text-dark"
+			style="font-size: 35px; text-decoration: none;"></a>
+		<div class="row d-flex justify-content-center">
+			<form th:action="@{/product/category?namePage=earphone}"
+				class="col-md-5" th:object="${product}" method="post" action="#"
+				enctype="multipart/form-data">
+				<h2 class="text-center">Add Earphone</h2>
+				<div class="form-group">
+					<label for="">Tên Earphone:</label> <input type="text"
+						class="form-control" th:field="*{productName}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Giá sản phẩm:</label> <input type="text"
+						class="form-control" th:field="*{price}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Thời gian tai nghe:</label> <input type="text" class="form-control"
+						required th:field="*{configure.timeEarPhone}" />
+				</div>
+				<div class="form-group">
+					<label for="">Thời gian hộp sạc:</label> <input type="text" class="form-control"
+						required th:field="*{configure.timeChargeBox}" />
+				</div>
+				<div class="form-group">
+					<label for="">Kết nối được với hệ điều hành:</label> <input type="text" class="form-control"
+						required th:field="*{configure.connectWithOS}" />
+				</div>
+				<div class="form-group">
+					<label for="">Hỗ trợ kết nối:</label> <input type="text" class="form-control"
+						required th:field="*{configure.connectWithOS}" />
+				</div>
+				<div class="form-group">
+					<label for="">Cổng sạc:</label>
+					<div class="d-flex justify-content-around">
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="chargePort"
+								name="radio" value="Type-C" th:field="*{configure.chargePort}">
+							<label class="custom-control-label" for="chargePort">Type-C</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input"
+								id="chargePort1" name="radio" value="Lightning"
+								th:field="*{configure.chargePort}"> <label
+								class="custom-control-label" for="chargePort1">Lightning</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="">Số lượng:</label> <input type="text"
+						class="form-control" th:field="*{number}" style="width: 150px" />
+				</div>
+				<div class="form-group d-flex flex-column">
+					<label for="">Hãng sản xuất:</label> <select name="cars"
+						th:field="*{brand}" class="custom-select custom-select-md"
+						style="width: 250px">
+						<option th:each="b : ${brandList}" th:value="${b}" th:text="${b}" />
+					</select>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn 1 ảnh đại diện sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="imageInfor" placeholder="Enter photo" accept="image/*"
+						id="image1" required>
+				</div>
+				<div id="frame1" class="d-flex justify-content-around flex-wrap"></div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn 2 đến 10 ảnh chi tiết sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="photos" placeholder="Enter photo" accept="image/*"
+						id="image" multiple="multiple" required>
+				</div>
+				<div id="frames" class="d-flex justify-content-around flex-wrap"></div>
+				<button type="submit" class="btn btn-primary" id="submit">Thêm
+					sản phẩm</button>
+			</form>
+		</div>
+	</div>
+	<div class="container my-3" th:fragment="earphoneupdate">
+		<a href="/listproducts?namePage=products&p=0"
+			class="fa-regular fa-circle-xmark text-dark"
+			style="font-size: 35px; text-decoration: none;"></a>
+		<div class="row d-flex justify-content-center">
+			<form th:action="@{/listproducts/update(id=${product.getId()})}"
+				class="col-md-5" th:object="${product}" method="post" action="#"
+				enctype="multipart/form-data">
+				<h2 class="text-center">Update Earphone</h2>
+				<div class="form-group">
+					<label for="">Tên Earphone:</label> <input type="text"
+						class="form-control" th:field="*{productName}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Giá sản phẩm:</label> <input type="text"
+						class="form-control" th:field="*{price}" required />
+				</div>
+				<div class="form-group">
+					<label for="">Thời gian tai nghe:</label> <input type="text" class="form-control"
+						required th:field="*{configure.timeEarPhone}" />
+				</div>
+				<div class="form-group">
+					<label for="">Thời gian hộp sạc:</label> <input type="text" class="form-control"
+						required th:field="*{configure.timeChargeBox}" />
+				</div>
+				<div class="form-group">
+					<label for="">Kết nối được với hệ điều hành:</label> <input type="text" class="form-control"
+						required th:field="*{configure.connectWithOS}" />
+				</div>
+				<div class="form-group">
+					<label for="">Hỗ trợ kết nối:</label> <input type="text" class="form-control"
+						required th:field="*{configure.connectWithOS}" />
+				</div>
+				<div class="form-group">
+					<label for="">Cổng sạc:</label>
+					<div class="d-flex justify-content-around">
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input" id="chargePort"
+								name="radio" value="Type-C" th:field="*{configure.chargePort}">
+							<label class="custom-control-label" for="chargePort">Type-C</label>
+						</div>
+						<div class="custom-control custom-radio">
+							<input type="radio" class="custom-control-input"
+								id="chargePort1" name="radio" value="Lightning"
+								th:field="*{configure.chargePort}"> <label
+								class="custom-control-label" for="chargePort1">Lightning</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="">Số lượng:</label> <input type="text"
+						class="form-control" th:field="*{number}" style="width: 150px" />
+				</div>
+				<div class="form-group d-flex flex-column">
+					<label for="">Hãng sản xuất:</label> <select name="cars"
+						th:field="*{brand}" class="custom-select custom-select-md"
+						style="width: 250px">
+						<option th:each="b : ${brandList}" th:value="${b}" th:text="${b}" />
+					</select>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn 1 ảnh đại diện sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="imageInfor" placeholder="Enter photo" accept="image/*"
+						id="image1">
+				</div>
+				<div id="frame1" class="d-flex justify-content-around flex-wrap">
+					<img th:src="@{'../images/' + ${product.getId()} + '/infor/' + ${product.getImageProductInfor()}}" 
+					alt="" style="width:200px; height:200px"/>
+				</div>
+				<div class="form-group custom-file my-3">
+					<label class="custom-file-label">Chọn từ 2 đến 10 ảnh chi tiết sản
+						phẩm</label> <input type="file" class="form-control custom-file-input"
+						name="photos" placeholder="Enter photo" accept="image/*"
+						id="image" multiple="multiple">
+				</div>
+				<div id="frames" class="d-flex justify-content-around flex-wrap">
+					<th:block th:each="p : ${product.getProductImages()}">
+						<img th:src="@{'../images/' + ${product.getId()} + '/' + ${p.getImage()}}"
+						 alt="" style="width:200px; height:200px; margin-bottom: 15px; margin-top: 10px"/>
+					</th:block>
+				</div>
+				<button type="submit" class="btn btn-primary" id="submit">Chỉnh sửa sản phẩm</button>
 			</form>
 		</div>
 	</div>

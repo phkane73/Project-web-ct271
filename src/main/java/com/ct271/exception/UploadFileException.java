@@ -16,7 +16,7 @@ public class UploadFileException {
       HttpServletRequest request,
       HttpServletResponse response) {
  
-        ModelAndView modelAndView = new ModelAndView("infor");
+        ModelAndView modelAndView = new ModelAndView("index");
         modelAndView.getModel().put("message", "File too large!");
         return modelAndView;
     }

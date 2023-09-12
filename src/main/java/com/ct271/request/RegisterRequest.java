@@ -14,7 +14,7 @@ public record RegisterRequest(
 		@NotBlank(message="Mật khẩu không thể bỏ trống")
 		String password,
 		@NotBlank(message="Sdt không thể bỏ trống")
-//		@Pattern(regexp = "^[0-9\\-\\+]{9,15}$\r\n", message = "Số điện thoại không hợp lệ")
+		@Pattern(regexp = "(^$|[0-9]{10})", message = "Số điện thoại không hợp lệ")
 		String phone,
 		@NotBlank(message="Address không thể bỏ trống")
 		String address,

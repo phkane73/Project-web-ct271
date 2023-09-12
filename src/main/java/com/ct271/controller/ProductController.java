@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ct271.DeleteFile;
 import com.ct271.FileUploadUtil;
 import com.ct271.entity.Configure;
 import com.ct271.entity.Product;
@@ -45,12 +46,30 @@ public class ProductController {
 	public String showAddProduct(Model model, @RequestParam("namePage") String namePage) {
 		Product product = new Product();
 		model.addAttribute("product", product);
-		if (namePage.equals("tablet")) {
+		if(namePage.equals("tablet")) {
 			List<String> brandList = Arrays.asList("Apple iPad", "Samsung", "Xiaomi", "OPPO");
 			List<String> diskSpaceList = Arrays.asList("16GB", "32GB", "64GB", "128GB", "256GB", "512GB", "1T", "2T");
 			model.addAttribute("brandList", brandList);
 			model.addAttribute("diskSpaceList", diskSpaceList);
 			model.addAttribute("namePage", "tablet");
+			return "AdminPage/index";
+		}
+		if(namePage.equals("laptop")) {
+			List<String> brandList = Arrays.asList("MacBook", "hp", "Asus", "Dell", "Acer", "Lenovo");
+			model.addAttribute("brandList", brandList);
+			model.addAttribute("namePage", "laptop");
+			return "AdminPage/index";
+		}
+		if(namePage.equals("smartwatch")) {
+			List<String> brandList = Arrays.asList("Apple", "Samsung", "Xiaomi");
+			model.addAttribute("brandList", brandList);
+			model.addAttribute("namePage", "smartwatch");
+			return "AdminPage/index";
+		}
+		if(namePage.equals("earphone")) {
+			List<String> brandList = Arrays.asList("Apple", "Samsung", "SONY","OPPO");
+			model.addAttribute("brandList", brandList);
+			model.addAttribute("namePage", "earphone");
 			return "AdminPage/index";
 		}
 		return "AdminPage/index";
@@ -60,15 +79,9 @@ public class ProductController {
 	public String addProduct(Model model, @RequestParam("namePage") String namePage,
 			@ModelAttribute("product") Product product, @RequestParam("photos") MultipartFile[] photos,
 			@RequestParam("imageInfor") MultipartFile imageInfor) throws IOException{
-		if (namePage.equals("tablet")) {
-			Configure configure = new Configure(product.getConfigure().getRam(), product.getConfigure().getScreen(),
-					product.getConfigure().getOs(), product.getConfigure().getChip(),
-					product.getConfigure().getDiskSpace(), product.getConfigure().getSim(),
-					product.getConfigure().getFrontCamera(), product.getConfigure().getBackCamera(),
-					product.getConfigure().getPin());
-			iConfigureService.addConfigure(configure);
+			Configure configure = iConfigureService.addConfigure(product);
 			product.setConfigure(configure);
-			product.setCategoryName("tablet");
+			product.setCategoryName(namePage);
 			product.setImageProductInfor(imageInfor.getOriginalFilename());
 			iProductService.addProduct(product);
 			String filenameInfor = StringUtils.cleanPath(imageInfor.getOriginalFilename());
@@ -87,14 +100,18 @@ public class ProductController {
 					e.printStackTrace();
 				}	
 			});
-			return "redirect:/product/category?namePage=tablet";
-		}
-		return "AdminPage/index";
-	}
-
-	@GetMapping("/product/products/{id}")
-	public String getProduct(@PathVariable Long id) {
-		iProductService.getProduct(id);
+			if(namePage.equals("tablet")) {			
+				return "redirect:/product/category?namePage=tablet";
+			}
+			if(namePage.equals("laptop")) {
+				return "redirect:/product/category?namePage=laptop";
+			}
+			if(namePage.equals("smartwatch")) {
+				return "redirect:/product/category?namePage=smartwatch";
+			}
+			if(namePage.equals("earphone")) {
+				return "redirect:/product/category?namePage=earphone";
+			}
 		return "AdminPage/index";
 	}
 	
@@ -110,6 +127,7 @@ public class ProductController {
 		if(session.getAttribute("admin") != null) {		
 			Pageable pageable = PageRequest.of(p.orElse(0), numberElementOfPage);
 			Page<Product> page = iProductService.findAll(pageable);
+			
 			int[] numberPageArr = new int[numberPage];
 			for(int i=0; i<numberPage; i++) {
 				numberPageArr[i] = i;
@@ -118,8 +136,88 @@ public class ProductController {
 			model.addAttribute("allProducts", products);
 			model.addAttribute("namePage", namePage);
 			model.addAttribute("listProducts", page);
+			model.addAttribute("currentPage", p.get());
 		return "AdminPage/index";
 		}
 		return "redirect:/login";
+	}
+	
+	@GetMapping("/listproducts/delete/{id}")
+	public String deleteProduct(@PathVariable("id") Long id, HttpSession session) throws IOException {
+		if(session.getAttribute("admin") != null) {
+			iProductService.deleteProduct(id);
+			return "redirect:/listproducts?namePage=products&p=0";
+		}
+		return "redirect:/login";	
+	}
+	
+	@GetMapping("/listproducts/update")
+	public String showUpdateProduct(@RequestParam("id") Long id, HttpSession session, Model model,
+			@RequestParam("namePage") String namePage) {
+		Optional<Product> product = iProductService.getProduct(id);
+		model.addAttribute("product", product.get());
+		if(namePage.equals("tablet")) {			
+			List<String> brandList = Arrays.asList("Apple iPad", "Samsung", "Xiaomi", "OPPO");
+			List<String> diskSpaceList = Arrays.asList("16GB", "32GB", "64GB", "128GB", "256GB", "512GB", "1T", "2T");
+			model.addAttribute("brandList", brandList);
+			model.addAttribute("diskSpaceList", diskSpaceList);		
+			model.addAttribute("namePage", "tabletupdate");
+			return "AdminPage/index";
+		}
+		if(namePage.equals("laptop")) {
+			List<String> brandList = Arrays.asList("MacBook", "hp", "Asus", "Dell", "Acer", "Lenovo");
+			model.addAttribute("brandList", brandList);
+			model.addAttribute("namePage", "laptopupdate");
+			return "AdminPage/index";
+		}
+		if(namePage.equals("smartwatch")) {
+			List<String> brandList = Arrays.asList("Apple", "Samsung", "Xiaomi");
+			model.addAttribute("brandList", brandList);
+			model.addAttribute("namePage", "smartwatchupdate");
+			return "AdminPage/index";
+		}
+		if(namePage.equals("earphone")) {
+			List<String> brandList = Arrays.asList("Apple", "Samsung", "SONY","OPPO");
+			model.addAttribute("brandList", brandList);
+			model.addAttribute("namePage", "earphoneupdate");
+			return "AdminPage/index";
+		}
+		return "AdminPage/index";
+	}
+	
+	@PostMapping("/listproducts/update")
+	public String updateProduct(Model model, @ModelAttribute("product") Product product,@RequestParam("photos") MultipartFile[] photos,
+			@RequestParam("imageInfor") MultipartFile imageInfor, @RequestParam("id") Long id) throws IOException {
+		Configure configure = iConfigureService.updateConfigure(id,product);
+		product.setConfigure(configure);
+		if(!imageInfor.isEmpty()) {		
+			String pathImageInforProduct = "./src/main/resources/static/images/"+id+"/infor/";
+			DeleteFile.deleteFile(pathImageInforProduct);
+			product.setImageProductInfor(imageInfor.getOriginalFilename());
+			String filenameInfor = StringUtils.cleanPath(imageInfor.getOriginalFilename());
+			String uploadDirInfor = "./src/main/resources/static/images/" + id +"/infor/";
+			FileUploadUtil.saveFile(uploadDirInfor, filenameInfor, imageInfor);
+		}
+		iProductService.updateProduct(id, product);	
+		if(photos.length > 1) {	
+			iProductImageService.deleteImage(product);
+			String pathImageInforProduct = "./src/main/resources/static/images/"+ id+"/";
+			DeleteFile.deleteFile(pathImageInforProduct);
+			Arrays.asList(photos).stream().forEach(photo -> {
+				ProductImage productImages = new ProductImage();
+				productImages.setImage(photo.getOriginalFilename());
+				productImages.setProduct(product);
+				iProductImageService.addImage(productImages);	
+				String filename = StringUtils.cleanPath(photo.getOriginalFilename());
+				String uploadDir = "./src/main/resources/static/images/" + id;
+				try {
+					FileUploadUtil.saveFile(uploadDir, filename, photo);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}	
+			});
+		}
+		model.addAttribute("namePage", "products");
+		return "redirect:/listproducts?namePage=products&p=0";
 	}
 }

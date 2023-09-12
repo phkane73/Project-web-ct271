@@ -107,6 +107,7 @@ public class UserController {
 			model.addAttribute("listUser", page);
 			model.addAttribute("numberPage", numberPageArr);
 			model.addAttribute("alluser", allUser);
+			model.addAttribute("currentPage", p.get());
 			model.addAttribute("namePage","list users");
 			return "AdminPage/index";
 		}
@@ -116,9 +117,6 @@ public class UserController {
 	@GetMapping("/adminPage/next")
 	public String nextPage(Model model,@RequestParam("namePage") String namePage,HttpSession session) {
 		if(session.getAttribute("admin") != null) {		
-			if(namePage.equals("table")) {
-				return "redirect:/adminPage/page";
-			}
 			if(namePage.equals("addproduct")) {
 				model.addAttribute("namePage","add product");
 				return "AdminPage/index";

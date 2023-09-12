@@ -4,12 +4,28 @@
 <meta charset="UTF-8">
 <title th:text=${namePage}></title>
 <link rel="stylesheet" th:href="@{/css/style.css}" />
-<link th:insert="~{AdminPage/fragment::bootstrap1}" />
-<script th:insert="~{AdminPage/fragment::bootstrap2}"></script>
-<script th:insert="~{AdminPage/fragment::bootstrap3}"></script>
-<script th:insert="~{AdminPage/fragment::bootstrap4}"></script>
-<link th:insert="~{AdminPage/fragment::fontawesome}" />
-<link th:insert="~{AdminPage/fragment::jquery}" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+	crossorigin="anonymous" >
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous" ></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+	crossorigin="anonymous" ></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	crossorigin="anonymous" ></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+	th:fragment="fontawesome" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+	th:fragment="jquery"></script>
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -26,9 +42,9 @@
 							class="list-group-item list-group-item-action">Overview</a> 
 						<a th:href="@{/adminPage/next(namePage='addproduct')}"
 							class="list-group-item list-group-item-action">Add Product</a> 
-						<a th:href="@{/adminPage/next(namePage='table')}"
+						<a href="/adminPage/page?p=0"
 							class="list-group-item list-group-item-action">Users management</a> 
-						<a th:href="@{/listproducts(namePage='products',papa='222')}"
+						<a th:href="@{/listproducts(namePage='products',p=0)}"
 							class="list-group-item list-group-item-action">Product managerment</a>
 					</div>
 				</div>
@@ -67,8 +83,30 @@
 						<div th:case="'tablet'" style="width: 100%;">
 							<div th:replace="~{AdminPage/fragment::tablet}"></div>
 						</div>
+						<div th:case="'tabletupdate'" style="width: 100%;">
+							<div th:replace="~{AdminPage/fragment::tabletupdate}"></div>
+						</div>
+						<div th:case="'laptop'" style="width: 100%;">
+							<div th:replace="~{AdminPage/fragment::laptop}"></div>
+						</div>
+						<div th:case="'laptopupdate'" style="width: 100%;">
+							<div th:replace="~{AdminPage/fragment::laptopupdate}"></div>
+						</div>
+						<div th:case="'smartwatch'" style="width: 100%;">
+							<div th:replace="~{AdminPage/fragment::smartwatch}"></div>
+						</div>
+						<div th:case="'smartwatchupdate'" style="width: 100%;">
+							<div th:replace="~{AdminPage/fragment::smartwatchupdate}"></div>
+						</div>
+						<div th:case="'earphone'" style="width: 100%;">
+							<div th:replace="~{AdminPage/fragment::earphone}"></div>
+						</div>
+						<div th:case="'earphoneupdate'" style="width: 100%;">
+							<div th:replace="~{AdminPage/fragment::earphoneupdate}"></div>
+						</div>
 					</th:block>
 				</div>
+				<span th:text="${message}"></span>
 			</div>
 		</div>
 	</div>
@@ -76,6 +114,7 @@
 	$(document).ready(function(){
 	    $('#image1').change(function(){
 	        $("#frame1").html('');
+	        $("#frame1").empty();
 	    	$("#frame1").append('<img src="'+window.URL.createObjectURL(this.files[0])+
 	            			'"width="200px" height="200px"/>');
 	    });    
@@ -83,8 +122,11 @@
 	    $('#image').change(function(){
 	    	$('#submit').prop('disabled', false);
 	        $("#frames").html('');
-	    	if($(this)[0].files.length > 4){
-	    		$("#frames").append('<span class="text-danger">Số lượng ảnh không vượt quá 4</span>');
+	    	if($(this)[0].files.length > 10){
+	    		$("#frames").append('<span class="text-danger">Số lượng ảnh không vượt quá 10</span>');
+	    		$('#submit').prop('disabled', true);
+	    	}else if($(this)[0].files.length < 2){
+	    		$("#frames").append('<span class="text-danger">Số lượng ảnh không ít hơn 2 ảnh</span>');
 	    		$('#submit').prop('disabled', true);
 	    	}else{
 	        	for (var i = 0; i < $(this)[0].files.length; i++) {
@@ -93,7 +135,12 @@
 	            	$(".items").css({"margin-top":"10px","margin-bottom":"15px"});
 	        	}
 	    	}
-	    });    
+	    });  
+	    
+		$('.delete').on('click', function(){
+			var id = $(this).data('id');
+			$('.submit').prop('href', '/listproducts/delete/' + id);
+		})   
 	});
 </script>
 </body>
