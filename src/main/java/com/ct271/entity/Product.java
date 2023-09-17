@@ -14,7 +14,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "product")
 public class Product {
@@ -54,76 +58,4 @@ public class Product {
 		this.configure = configure;
 		this.productImages = productImages;
 	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getProductName() {
-		return productName;
-	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-
-	public String getPrice() {
-		return price;
-	}
-
-	public void setPrice(String price) {
-		this.price = price;
-	}
-
-	public String getNumber() {
-		return number;
-	}
-
-	public void setNumber(String number) {
-		this.number = number;
-	}
-
-	public String getBrand() {
-		return brand;
-	}
-
-	public void setBrand(String brand) {
-		this.brand = brand;
-	}
-
-	public String getCategoryName() {
-		return categoryName;
-	}
-
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
-
-	public String getImageProductInfor() {
-		return imageProductInfor;
-	}
-
-	public void setImageProductInfor(String imageProductInfor) {
-		this.imageProductInfor = imageProductInfor;
-	}
-
-	public Configure getConfigure() {
-		return configure;
-	}
-
-	public void setConfigure(Configure configure) {
-		this.configure = configure;
-	}
-
-	public Set<ProductImage> getProductImages() {
-		return productImages;
-	}
-
-	public void setProductImages(Set<ProductImage> productImages) {
-		this.productImages = productImages;
-	}	
 }

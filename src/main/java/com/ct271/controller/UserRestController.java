@@ -2,6 +2,7 @@ package com.ct271.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,18 +15,19 @@ import com.ct271.entity.User;
 import com.ct271.service.IUserService;
 
 @CrossOrigin(origins = "*")
-@RequestMapping("/app")
+@RequestMapping("/user")
 @RestController
-
+@RequiredArgsConstructor
 public class UserRestController {
+	private final IUserService iUserService;
 
-	@Autowired
-	private IUserService iUserService;
-
-
-	@GetMapping("/status")
+	@GetMapping("/users")
 	public ResponseEntity<?> status() {
 		List<User> users = iUserService.getAllUser();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
+
+
+
+
 }

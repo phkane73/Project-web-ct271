@@ -1,5 +1,7 @@
 package com.ct271.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Transient;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -12,6 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+@Setter
+@Getter
 @Entity
 public class ProductImage {
 	@Id
@@ -35,30 +39,6 @@ public class ProductImage {
 		this.product = product;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
-	}
-	
 	@Transient
     public String getPhotosImagePath() {
         if(image == null) return null;        

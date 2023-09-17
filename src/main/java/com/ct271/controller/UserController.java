@@ -76,7 +76,7 @@ public class UserController {
 			model.addAttribute("message", "Tài khoản hoặc mật khẩu không chính xác");
 			return "UserPage/login";
 		}else if(iUserService.userLogin(user,session) == 1){	
-			return "redirect:/homePage";			
+			return "redirect:http://localhost:5173/";
 		}
 		session.setAttribute("admin", 0);
 		return "redirect:/adminPage/next?namePage=overview";

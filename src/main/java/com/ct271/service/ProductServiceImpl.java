@@ -3,6 +3,7 @@ package com.ct271.service;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,13 +16,12 @@ import com.ct271.repository.IConfigureRepo;
 import com.ct271.repository.IProductRepo;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements IProductService{
 
-	@Autowired
-	private IProductRepo iProductRepo;
-	
-	@Autowired
-	private IConfigureRepo iConfigureRepo;
+	private final IProductRepo iProductRepo;
+
+	private final IConfigureRepo iConfigureRepo;
 	
 	@Override
 	public Product addProduct(Product product) {
@@ -57,10 +57,14 @@ public class ProductServiceImpl implements IProductService{
 	public boolean deleteProduct(Long id) {
 		Optional<Product> product = iProductRepo.findById(id);
 		if(product != null) {
-			String pathImageInforProduct = "./src/main/resources/static/images/"+id+"/infor/";
-			DeleteFile.deleteFile(pathImageInforProduct);
-			String pathImageProduct = "./src/main/resources/static/images/"+id;
-			DeleteFile.deleteFile(pathImageProduct);
+			String pathImageInforProductBE = "./src/main/resources/static/images/"+id+"/infor/";
+			DeleteFile.deleteFile(pathImageInforProductBE);
+			String pathImageInforProductFE = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/"+id+"/infor/";
+			DeleteFile.deleteFile(pathImageInforProductFE);
+			String pathImageProductBE = "./src/main/resources/static/images/"+id;
+			DeleteFile.deleteFile(pathImageProductBE);
+			String pathImageProductFE = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/"+id;
+			DeleteFile.deleteFile(pathImageProductFE);
 			iProductRepo.deleteById(id);
 			iConfigureRepo.deleteById(product.get().getConfigure().getId());
 			return true;

@@ -76,7 +76,7 @@ public class ProductController {
 	}
 
 	@PostMapping("/product/category")
-	public String addProduct(Model model, @RequestParam("namePage") String namePage,
+	public String addProduct(@RequestParam("namePage") String namePage,
 			@ModelAttribute("product") Product product, @RequestParam("photos") MultipartFile[] photos,
 			@RequestParam("imageInfor") MultipartFile imageInfor) throws IOException{
 			Configure configure = iConfigureService.addConfigure(product);
@@ -85,17 +85,21 @@ public class ProductController {
 			product.setImageProductInfor(imageInfor.getOriginalFilename());
 			iProductService.addProduct(product);
 			String filenameInfor = StringUtils.cleanPath(imageInfor.getOriginalFilename());
-			String uploadDirInfor = "./src/main/resources/static/images/" + product.getId()+"/infor";
-			FileUploadUtil.saveFile(uploadDirInfor, filenameInfor, imageInfor);		
+			String uploadDirInforFE = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/" + product.getId()+"/infor/";
+			String uploadDirInforBE = "./src/main/resources/static/images/" + product.getId()+"/infor/";
+			FileUploadUtil.saveFile(uploadDirInforFE, filenameInfor, imageInfor);
+			FileUploadUtil.saveFile(uploadDirInforBE, filenameInfor, imageInfor);
 			Arrays.asList(photos).stream().forEach(photo -> {
 				ProductImage productImages = new ProductImage();
 				productImages.setImage(photo.getOriginalFilename());
 				productImages.setProduct(product);
-				iProductImageService.addImage(productImages);	
+				iProductImageService.addImage(productImages);
 				String filename = StringUtils.cleanPath(photo.getOriginalFilename());
-				String uploadDir = "./src/main/resources/static/images/" + product.getId();
+				String uploadDir = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/" + product.getId();
+				String uploadDirBE = "./src/main/resources/static/images/" + product.getId();
 				try {
 					FileUploadUtil.saveFile(uploadDir, filename, photo);
+					FileUploadUtil.saveFile(uploadDirBE, filename, photo);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}	
@@ -191,27 +195,35 @@ public class ProductController {
 		Configure configure = iConfigureService.updateConfigure(id,product);
 		product.setConfigure(configure);
 		if(!imageInfor.isEmpty()) {		
-			String pathImageInforProduct = "./src/main/resources/static/images/"+id+"/infor/";
-			DeleteFile.deleteFile(pathImageInforProduct);
+			String pathImageInforProductBE = "./src/main/resources/static/images/"+id+"/infor/";
+			DeleteFile.deleteFile(pathImageInforProductBE);
+			String pathImageInforProductFE = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/"+id+"/infor/";
+			DeleteFile.deleteFile(pathImageInforProductFE);
 			product.setImageProductInfor(imageInfor.getOriginalFilename());
 			String filenameInfor = StringUtils.cleanPath(imageInfor.getOriginalFilename());
-			String uploadDirInfor = "./src/main/resources/static/images/" + id +"/infor/";
-			FileUploadUtil.saveFile(uploadDirInfor, filenameInfor, imageInfor);
+			String uploadDirInforBE = "./src/main/resources/static/images/" + id +"/infor/";
+			FileUploadUtil.saveFile(uploadDirInforBE, filenameInfor, imageInfor);
+			String uploadDirInforFE = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/" + id +"/infor/";
+			FileUploadUtil.saveFile(uploadDirInforFE, filenameInfor, imageInfor);
 		}
 		iProductService.updateProduct(id, product);	
 		if(photos.length > 1) {	
 			iProductImageService.deleteImage(product);
-			String pathImageInforProduct = "./src/main/resources/static/images/"+ id+"/";
-			DeleteFile.deleteFile(pathImageInforProduct);
+			String pathImageProductFE = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/"+ id+"/";
+			DeleteFile.deleteFile(pathImageProductFE);
+			String pathImageProductBE = "./src/main/resources/static/images/"+ id+"/";
+			DeleteFile.deleteFile(pathImageProductBE);
 			Arrays.asList(photos).stream().forEach(photo -> {
 				ProductImage productImages = new ProductImage();
 				productImages.setImage(photo.getOriginalFilename());
 				productImages.setProduct(product);
 				iProductImageService.addImage(productImages);	
 				String filename = StringUtils.cleanPath(photo.getOriginalFilename());
-				String uploadDir = "./src/main/resources/static/images/" + id;
+				String uploadDirFE = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/" + id;
+				String uploadDirBE = "./src/main/resources/static/images/"+ id;
 				try {
-					FileUploadUtil.saveFile(uploadDir, filename, photo);
+					FileUploadUtil.saveFile(uploadDirFE, filename, photo);
+					FileUploadUtil.saveFile(uploadDirBE, filename, photo);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}	
