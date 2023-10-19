@@ -1,5 +1,5 @@
 package com.ct271;
-
+//Configure việc upload ảnh vào thư mục, để có thể hiển thị ảnh
 import java.nio.file.Path;
 import java.nio.file.Paths;
 

@@ -1,54 +1,61 @@
 package com.ct271.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ct271.encrypt.Encrypt;
+import com.ct271.entity.Cart;
+import com.ct271.entity.User;
+import com.ct271.repository.ICartRepo;
+import com.ct271.repository.IUserRepo;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.ct271.encrypt.Encrypt;
-import com.ct271.entity.User;
-import com.ct271.repository.IUserRepo;
-
-import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
 public class UserServiceImpl implements IUserService {
 
-	@Autowired
-	private IUserRepo userRepo;
+	private final IUserRepo userRepo;
+
+	private final ICartRepo iCartRepo;
+
+	public UserServiceImpl(IUserRepo userRepo, ICartRepo iCartRepo) {
+		this.userRepo = userRepo;
+		this.iCartRepo = iCartRepo;
+	}
 
 	@Override
 	public User addUser(User user) {
 		User newuser = new User(user.getUsername(), user.getEmail(), user.getPhone(), user.getAddress(),
 				Encrypt.toSHA1(user.getPassword()), user.getRole());
-			return userRepo.save(newuser);
+		Cart cart = new Cart();
+		cart.setUser(newuser);
+		iCartRepo.save(cart);
+		return userRepo.save(newuser);
 	}
 
 	@Override
 	public User userRegister(User user) {
 		User oldUser = userRepo.findByEmail(user.getEmail());
-		if (oldUser == null) {	
+		if (oldUser == null) {
 			return user;
 		}
 		return null;
 	}
 
 	@Override
-	public int userLogin(User user, HttpSession session) {
+	public User userLogin(User user) {
 		User u = userRepo.findByEmail(user.getEmail());
 		if (u != null) {
-			if (u.getPassword().equals(Encrypt.toSHA1(user.getPassword()))) {			
-				session.setAttribute("name", u.getUsername());
-				return u.getRole();
+			if (u.getPassword().equals(Encrypt.toSHA1(user.getPassword()))) {
+				return u;
 			}
-			return 2;
 		}
-		return 2;
+		return null;
 	}
 
 	@Override
@@ -62,12 +69,10 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public int userLogout(HttpSession session) {
-		session.removeAttribute("name");
+	public void userLogout(HttpSession session) {
 		session.removeAttribute("admin");
-		return 0;
 	}
-	
+
 	@Override
 	public List<User> findAll(Sort sort) {
 		return userRepo.findAll(sort);
@@ -77,7 +82,7 @@ public class UserServiceImpl implements IUserService {
 	public Page<User> findAll(Pageable pageable) {
 		return userRepo.findAll(pageable);
 	}
-	
+
 	@Override
 	public long getTotalElement() {
 		return userRepo.count();

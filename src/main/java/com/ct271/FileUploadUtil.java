@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import org.springframework.web.multipart.MultipartFile;
-
+//Lưu ảnh vào thư mục, để có thể hiện thị ảnh
 public class FileUploadUtil {
 	public static void saveFile(String uploadDir, String fileName, 
 		MultipartFile multipartFile) throws IOException {

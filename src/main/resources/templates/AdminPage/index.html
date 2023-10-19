@@ -140,7 +140,12 @@
 		$('.delete').on('click', function(){
 			var id = $(this).data('id');
 			$('.submit').prop('href', '/listproducts/delete/' + id);
-		})   
+		});
+
+		$('#price').on('change', function (){
+			var price = new Intl.NumberFormat().format($(this).val()).replaceAll(',','.');
+			$('#mes-price').html(price+'đ')
+		});
 	});
 </script>
 </body>

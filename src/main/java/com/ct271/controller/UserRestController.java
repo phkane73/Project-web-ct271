@@ -1,33 +1,37 @@
 package com.ct271.controller;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.ct271.entity.Cart;
 import com.ct271.entity.User;
+import com.ct271.repository.ICartRepo;
 import com.ct271.service.IUserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RequestMapping("/user")
 @RestController
-@RequiredArgsConstructor
 public class UserRestController {
 	private final IUserService iUserService;
 
-	@GetMapping("/users")
-	public ResponseEntity<?> status() {
-		List<User> users = iUserService.getAllUser();
-		return new ResponseEntity<>(users, HttpStatus.OK);
+	private final ICartRepo iCartRepo;
+
+	public UserRestController(IUserService iUserService, ICartRepo iCartRepo) {
+		this.iUserService = iUserService;
+		this.iCartRepo = iCartRepo;
 	}
 
-
-
-
+	@PostMapping ("/login")
+	public ResponseEntity<?> login(@RequestBody User user) {
+		User AuthUser = iUserService.userLogin(user);
+		if(AuthUser == null){
+			return new ResponseEntity<>("Tài khoản hoặc mật khẩu không chính xác!", HttpStatus.BAD_REQUEST);
+		}
+		Cart cart = iCartRepo.findCartByUserId(AuthUser.getId());
+		return new ResponseEntity <>(cart, HttpStatus.OK);
+	}
 }

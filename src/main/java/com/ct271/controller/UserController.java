@@ -1,8 +1,13 @@
 package com.ct271.controller;
+//Controller xử lý về user
+//Controller đáp ứng tài nguyên cho template engine thymeleaf chạy server side rendering
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ct271.entity.User;
+import com.ct271.request.RegisterRequest;
+import com.ct271.service.IProductService;
+import com.ct271.service.IUserService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,120 +19,131 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.ct271.entity.User;
-import com.ct271.request.RegisterRequest;
-import com.ct271.service.IProductService;
-import com.ct271.service.IUserService;
-
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
+import java.util.Optional;
 
 
 @Controller
 public class UserController {
 
-	@Autowired
-	private IUserService iUserService;
-	
-	@Autowired
-	private IProductService iProductService;
-	
-	
-	@GetMapping("/homePage")
-	public String showHomePage() {
-		return "UserPage/index";
+	private final IUserService iUserService;
+	private final IProductService iProductService;
+
+	public UserController(IUserService iUserService, IProductService iProductService) {
+		this.iUserService = iUserService;
+		this.iProductService = iProductService;
 	}
-	
-	
+
+	//Hiển thị form đăng ký
 	@GetMapping("/register")
 	public String showRegister(Model model) {
-		model.addAttribute("registerrequest", new RegisterRequest("","","","",""));
-		return "UserPage/register";
+		model.addAttribute("registerrequest", new RegisterRequest("", "", "", "", ""));
+		return "AdminPage/register";
 	}
-	
+
+	//Xử lý đăng ký
 	@PostMapping("/register")
 	public String submitFormRegister(Model model,
-			@Valid @ModelAttribute("registerrequest") RegisterRequest registerRequest, BindingResult result) {
-			User newuser = new User(registerRequest.username(), registerRequest.email(), registerRequest.phone(), 
-					registerRequest.address(),registerRequest.password(), 1);
+									 @Valid @ModelAttribute("registerrequest") RegisterRequest registerRequest, BindingResult result) {
+		//Tạo đối tượng newuser với thông tin nhập vào
+		User newuser = new User(registerRequest.username(), registerRequest.email(), registerRequest.phone(),
+				registerRequest.address(), registerRequest.password(), 1);
+		//Xử lí tài khoản đã tồn tại
 		if (iUserService.userRegister(newuser) == null && !result.hasErrors()) {
 			model.addAttribute("messageError", "Tài khoản đã tồn tại");
-			return "UserPage/register";
+			return "AdminPage/register";
 		}
-		if(result.hasErrors()) {
+		//Xử lý khi có lỗi sảy ra khi nhập được định nghĩa ở /request/RegisterRequest
+		if (result.hasErrors()) {
 			model.addAttribute("messageError", "Vui lòng nhập đúng các thông tin");
-			return "UserPage/register";
+			return "AdminPage/register";
 		}
+		//Lưu user vào database
 		iUserService.addUser(newuser);
+		//Hiển thị đăng ký thành công
 		model.addAttribute("messageSuccess", "Đăng ký tài khoản thành công");
-		model.addAttribute("registerrequest", new RegisterRequest("","","","",""));
-		return "UserPage/register";
+		model.addAttribute("registerrequest", new RegisterRequest("", "", "", "", ""));
+		return "AdminPage/register";
 	}
-	
+
+	//Hiển thị form login
 	@GetMapping("/login")
-	public String showLogin(User user,Model model) {
+	public String showLogin(User user, Model model) {
 		model.addAttribute("user", user);
-		return "UserPage/login";
+		return "AdminPage/login";
 	}
-	
+
+	//Xử lý login được gọi hàm userLogin từ /service/UserServiceImpl
 	@PostMapping("/login")
 	public String submitFormLogin(@ModelAttribute("user") User user, Model model, HttpSession session) {
-		if(iUserService.userLogin(user,session) == 2) {		
-			model.addAttribute("message", "Tài khoản hoặc mật khẩu không chính xác");
-			return "UserPage/login";
-		}else if(iUserService.userLogin(user,session) == 1){	
-			return "redirect:http://localhost:5173/";
+		User User = iUserService.userLogin(user);
+		if(User.getRole() == 0){
+			session.setAttribute("admin", "admin");
+			return "redirect:/adminPage/next?namePage=overview";
 		}
-		session.setAttribute("admin", 0);
-		return "redirect:/adminPage/next?namePage=overview";
+		model.addAttribute("message", "Tài khoản hoặc mật khẩu không chính xác");
+		return "AdminPage/login";
+
 	}
-	
+
+	//Xử lý đăng xuất tài khoản
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("name");
-		session.removeAttribute("admin");
+		//Xóa session
+		iUserService.userLogout(session);
 		return "redirect:/login";
 	}
-	
+
+	//Phan trang user management
 	@GetMapping("/adminPage/page")
 	public String paginate(Model model, @RequestParam("p") Optional<Integer> p, HttpSession session) {
+		//Tổng số user
 		long allUser = iUserService.getTotalElement();
-		int	numberElementOfPage = 9;
-		int numberPage = (int)allUser/numberElementOfPage;
-		if(numberPage <= 1) {
-			numberPage = 1;	
+		//Số user trong 1 trang
+		int numberElementOfPage = 9;
+		//Số trang
+		int numberPage = (int) allUser / numberElementOfPage;
+		//Khi số user chưa vượt quá 1 trang
+		if (numberPage <= 1) {
+			//Gáng số trang = 1
+			numberPage = 1;
 		}
-		if(session.getAttribute("admin") != null) {		
+		//Kiểm tra session admib
+		if (session.getAttribute("admin") != null) {
+			//Xử lý phân trang
 			Pageable pageable = PageRequest.of(p.orElse(0), numberElementOfPage);
 			Page<User> page = iUserService.findAll(pageable);
 			int[] numberPageArr = new int[numberPage];
-			for(int i=0; i<numberPage; i++) {
+			for (int i = 0; i < numberPage; i++) {
 				numberPageArr[i] = i;
 			}
 			model.addAttribute("listUser", page);
 			model.addAttribute("numberPage", numberPageArr);
 			model.addAttribute("alluser", allUser);
 			model.addAttribute("currentPage", p.get());
-			model.addAttribute("namePage","list users");
+			model.addAttribute("namePage", "list users");
 			return "AdminPage/index";
 		}
 		return "redirect:/login";
 	}
-		
+
+	//xử lý chuyển trang giữa các trang trong admin page
 	@GetMapping("/adminPage/next")
-	public String nextPage(Model model,@RequestParam("namePage") String namePage,HttpSession session) {
-		if(session.getAttribute("admin") != null) {		
-			if(namePage.equals("addproduct")) {
-				model.addAttribute("namePage","add product");
+	public String nextPage(Model model, @RequestParam("namePage") String namePage, HttpSession session) {
+		//Phải là admin mới cho phép vào admin page
+		if (session.getAttribute("admin") != null) {
+			//Replace component tương ứng với namePage
+			if (namePage.equals("addproduct")) {
+				model.addAttribute("namePage", "add product");
 				return "AdminPage/index";
 			}
-			if(namePage.equals("overview")) {
+			if (namePage.equals("overview")) {
+				//Hiển thị tổng số user và product trong trang overview
 				long users = iUserService.getTotalElement();
 				long products = iProductService.getTotalElement();
 				model.addAttribute("allUsers", users);
 				model.addAttribute("allProducts", products);
-				model.addAttribute("namePage","overview");
-				return "AdminPage/index";	
+				model.addAttribute("namePage", "overview");
+				return "AdminPage/index";
 			}
 		}
 		return "redirect:/login";

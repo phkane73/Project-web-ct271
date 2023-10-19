@@ -13,18 +13,18 @@ import jakarta.servlet.http.HttpSession;
 
 public interface IUserService {
 	
-	//Thêm tài khoản vào csdl
+	//Thêm tài khoản vào database
 	public User addUser(User user);
 	
-	//Đăng kí tài khoản 
+	//Đăng kí tài khoản (Kiểm tra xem tài khoản đã tồn tại chưa)
 	public User userRegister(User user);
 	
-	//Đăng nhâp tài khoản
-	public int userLogin(User user, HttpSession session);
-	
+	//Đăng nhâp
+	public User userLogin(User user);
+
 	//Đăng xuất tài khoản
-	public int userLogout(HttpSession session);
-	
+	public void userLogout(HttpSession session);
+
 	//Lấy ra 1 User
 	public Optional<User> getUser(Long id);
 	

@@ -85,7 +85,7 @@
 					<tr>
 						<th style="color: #3edbf0" class="text-center">STT</th>
 						<th style="color: #3edbf0" class="text-center">ID</th>
-						<th style="color: #3edbf0">Tên sản phẩm</th>
+						<th style="color: #3edbf0 ">Tên sản phẩm</th>
 						<th style="color: #3edbf0" class="text-center">Hãng sản xuất</th>
 						<th style="color: #3edbf0" class="text-center">Giá</th>
 						<th style="color: #3edbf0" class="text-center">Số lượng</th>
@@ -100,7 +100,9 @@
 							style="line-height: 100px"></td>
 						<td th:text="${p.id}" class="text-center"
 							style="line-height: 100px"></td>
-						<td th:text="${p.productName}" style="line-height: 100px"></td>
+						<td th:text="${p.productName}" style="line-height: 100px;
+						display: -webkit-box;overflow: hidden;-webkit-box-orient: vertical;
+						-webkit-line-clamp: 1; border: none"></td>
 						<td th:text="${p.brand}" class="text-center"
 							style="line-height: 100px"></td>
 						<td th:text="${p.price}" class="text-center"
@@ -226,9 +228,10 @@
 					<label for="">Tên Tablet:</label> <input type="text"
 						class="form-control" th:field="*{productName}" required />
 				</div>
-				<div class="form-group">
-					<label for="">Giá sản phẩm:</label> <input type="text"
-						class="form-control" th:field="*{price}" required />
+				<div class="form-group" style="position: relative">
+					<label for="">Giá sản phẩm:</label> <input type="text" id="price"
+						class="form-control" th:field="*{price}" required onfocus="this.value='';"/>
+					<span id="mes-price" style="position: absolute; top:40px; right: 10px; color: red" ></span>
 				</div>
 				<div class="form-group">
 					<label for="">Màn hình:</label> <input type="text"
@@ -268,7 +271,7 @@
 				</div>
 				<div class="form-group">
 					<label for="">Số lượng:</label> <input type="text"
-						class="form-control" th:field="*{number}" style="width: 150px" />
+						class="form-control" th:field="*{number}" style="width: 150px" onfocus="this.value='';"/>
 				</div>
 				<div class="form-group d-flex flex-column">
 					<label for="">Dung lượng lữu trữ:</label> <select name="diskSpace"
@@ -353,9 +356,9 @@
 					<label for="">Tên Tablet:</label> <input type="text"
 						class="form-control" th:field="*{productName}" required />
 				</div>
-				<div class="form-group">
-					<label for="">Giá sản phẩm:</label> <input type="text"
-						class="form-control" th:field="*{price}" required />
+				<div class="form-group" style="position: relative">
+					<label for="">Giá sản phẩm:</label> <input type="text" id="price" class="form-control" th:field="*{price}" required onfocus="this.value='';"/>
+					<span id="mes-price" style="position: absolute; top:40px; right: 10px; color: red" ></span>
 				</div>
 				<div class="form-group">
 					<label for="">Màn hình:</label> <input type="text"
@@ -488,9 +491,10 @@
 					<label for="">Tên Laptop:</label> <input type="text"
 						class="form-control" th:field="*{productName}" required />
 				</div>
-				<div class="form-group">
-					<label for="">Giá sản phẩm:</label> <input type="text"
-						class="form-control" th:field="*{price}" required />
+				<div class="form-group" style="position: relative">
+					<label for="">Giá sản phẩm:</label> <input type="text" id="price"
+															   class="form-control" th:field="*{price}" required onfocus="this.value='';"/>
+					<span id="mes-price" style="position: absolute; top:40px; right: 10px; color: red" ></span>
 				</div>
 				<div class="form-group">
 					<label for="">Màn hình:</label> <input type="text"
@@ -530,7 +534,7 @@
 				</div>
 				<div class="form-group">
 					<label for="">Số lượng:</label> <input type="text"
-						class="form-control" th:field="*{number}" style="width: 150px" />
+						class="form-control" th:field="*{number}" required style="width: 150px" onfocus="this.value='';"/>
 				</div>
 				<div class="form-group d-flex flex-column">
 					<label for="">Hãng sản xuất:</label> <select name="cars"
@@ -601,9 +605,10 @@
 					<label for="">Tên Laptop:</label> <input type="text"
 						class="form-control" th:field="*{productName}" required />
 				</div>
-				<div class="form-group">
-					<label for="">Giá sản phẩm:</label> <input type="text"
-						class="form-control" th:field="*{price}" required />
+				<div class="form-group" style="position: relative">
+					<label for="">Giá sản phẩm:</label> <input type="text" id="price"
+															   class="form-control" th:field="*{price}" required onfocus="this.value='';"/>
+					<span id="mes-price" style="position: absolute; top:40px; right: 10px; color: red" ></span>
 				</div>
 				<div class="form-group">
 					<label for="">Màn hình:</label> <input type="text"
@@ -721,9 +726,10 @@
 					<label for="">Tên Smartwatch:</label> <input type="text"
 						class="form-control" th:field="*{productName}" required />
 				</div>
-				<div class="form-group">
-					<label for="">Giá sản phẩm:</label> <input type="text"
-						class="form-control" th:field="*{price}" required />
+				<div class="form-group" style="position: relative">
+					<label for="">Giá sản phẩm:</label> <input type="text" id="price"
+															   class="form-control" th:field="*{price}" required onfocus="this.value='';"/>
+					<span id="mes-price" style="position: absolute; top:40px; right: 10px; color: red" ></span>
 				</div>
 				<div class="form-group">
 					<label for="">Màn hình:</label> <input type="text"
@@ -737,10 +743,13 @@
 					<label for="">Kết nối được với hệ điều hành:</label> <input type="text" class="form-control"
 						required th:field="*{configure.connectWithOS}" />
 				</div>
-			
+				<div class="form-group">
+					<label for="">Mặt đồng hồ:</label>
+					<input type="text" class="form-control" required th:field="*{configure.clockFace}" />
+				</div>
 				<div class="form-group">
 					<label for="">Số lượng:</label> <input type="text"
-						class="form-control" th:field="*{number}" style="width: 150px" />
+						class="form-control" th:field="*{number}" style="width: 150px;" onfocus="this.value='';"/>
 				</div>
 				<div class="form-group d-flex flex-column">
 					<label for="">Hãng sản xuất:</label> <select name="cars"
@@ -781,9 +790,10 @@
 					<label for="">Tên Smartwatch:</label> <input type="text"
 						class="form-control" th:field="*{productName}" required />
 				</div>
-				<div class="form-group">
-					<label for="">Giá sản phẩm:</label> <input type="text"
-						class="form-control" th:field="*{price}" required />
+				<div class="form-group" style="position: relative">
+					<label for="">Giá sản phẩm:</label> <input type="text" id="price"
+															   class="form-control" th:field="*{price}" required onfocus="this.value='';"/>
+					<span id="mes-price" style="position: absolute; top:40px; right: 10px; color: red" ></span>
 				</div>
 				<div class="form-group">
 					<label for="">Màn hình:</label> <input type="text"
@@ -797,7 +807,10 @@
 					<label for="">Kết nối được với hệ điều hành:</label> <input type="text" class="form-control"
 						required th:field="*{configure.connectWithOS}" />
 				</div>
-			
+				<div class="form-group">
+					<label for="">Mặt đồng hồ:</label>
+					<input type="text" class="form-control" required th:field="*{configure.clockFace}" />
+				</div>
 				<div class="form-group">
 					<label for="">Số lượng:</label> <input type="text"
 						class="form-control" th:field="*{number}" style="width: 150px" />
@@ -848,9 +861,10 @@
 					<label for="">Tên Earphone:</label> <input type="text"
 						class="form-control" th:field="*{productName}" required />
 				</div>
-				<div class="form-group">
-					<label for="">Giá sản phẩm:</label> <input type="text"
-						class="form-control" th:field="*{price}" required />
+				<div class="form-group" style="position: relative">
+					<label for="">Giá sản phẩm:</label> <input type="text" id="price"
+															   class="form-control" th:field="*{price}" required onfocus="this.value='';"/>
+					<span id="mes-price" style="position: absolute; top:40px; right: 10px; color: red" ></span>
 				</div>
 				<div class="form-group">
 					<label for="">Thời gian tai nghe:</label> <input type="text" class="form-control"
@@ -886,7 +900,7 @@
 				</div>
 				<div class="form-group">
 					<label for="">Số lượng:</label> <input type="text"
-						class="form-control" th:field="*{number}" style="width: 150px" />
+						class="form-control" th:field="*{number}" style="width: 150px" onfocus="this.value='';"/>
 				</div>
 				<div class="form-group d-flex flex-column">
 					<label for="">Hãng sản xuất:</label> <select name="cars"
@@ -923,9 +937,10 @@
 				class="col-md-5" th:object="${product}" method="post" action="#"
 				enctype="multipart/form-data">
 				<h2 class="text-center">Update Earphone</h2>
-				<div class="form-group">
-					<label for="">Tên Earphone:</label> <input type="text"
-						class="form-control" th:field="*{productName}" required />
+				<div class="form-group" style="position: relative">
+					<label for="">Giá sản phẩm:</label> <input type="text" id="price"
+															   class="form-control" th:field="*{price}" required onfocus="this.value='';"/>
+					<span id="mes-price" style="position: absolute; top:40px; right: 10px; color: red" ></span>
 				</div>
 				<div class="form-group">
 					<label for="">Giá sản phẩm:</label> <input type="text"

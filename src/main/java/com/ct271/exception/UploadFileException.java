@@ -1,5 +1,5 @@
 package com.ct271.exception;
-
+//Xử lý lỗi file lớn k upload được
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -16,7 +16,7 @@ public class UploadFileException {
       HttpServletRequest request,
       HttpServletResponse response) {
  
-        ModelAndView modelAndView = new ModelAndView("index");
+        ModelAndView modelAndView = new ModelAndView("AdminPage/index");
         modelAndView.getModel().put("message", "File too large!");
         return modelAndView;
     }

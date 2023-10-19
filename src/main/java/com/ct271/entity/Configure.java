@@ -1,22 +1,11 @@
 package com.ct271.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
 @Entity
 @Table(name = "configure")
 public class Configure {
@@ -43,17 +32,18 @@ public class Configure {
 	private String timeChargeBox;
 	private String chargePort;
 	private String connectSupport;
+	private String clockFace;
 	@OneToMany(mappedBy = "configure", cascade = CascadeType.ALL)
-	@JsonManagedReference
+	@JsonBackReference
 	private Set<Product> products;
-	
+
 	public Configure() {
 		super();
 	}
-	
+
 	//Các config dành cho tablet
 	public Configure(String ram, String screen, String os, String chip, String diskSpace, String sim,
-			String frontCamera, String backCamera, String pin) {
+					 String frontCamera, String backCamera, String pin) {
 		super();
 		this.ram = ram;
 		this.screen = screen;
@@ -65,7 +55,7 @@ public class Configure {
 		this.backCamera = backCamera;
 		this.pin = pin;
 	}
-	
+
 	//Các configure cho Smartwatch
 	public Configure(String screen, String timeContinuousUse, String connectWithOS) {
 		super();
@@ -73,10 +63,10 @@ public class Configure {
 		this.timeContinuousUse = timeContinuousUse;
 		this.connectWithOS = connectWithOS;
 	}
-	
+
 	//Các configure cho Earphone
 	public Configure(String connectWithOS, String timeEarPhone, String timeChargeBox, String chargePort,
-			String connectSupport) {
+					 String connectSupport) {
 		super();
 		this.connectWithOS = connectWithOS;
 		this.timeEarPhone = timeEarPhone;
@@ -84,10 +74,10 @@ public class Configure {
 		this.chargePort = chargePort;
 		this.connectSupport = connectSupport;
 	}
-	
+
 	//Các configure cho Laptop
 	public Configure(String cpu, String ram, String hardDrive, String screen, String os, String weight,
-			String screenCard) {
+					 String screenCard) {
 		super();
 		this.cpu = cpu;
 		this.ram = ram;
@@ -99,4 +89,179 @@ public class Configure {
 	}
 
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setCpu(String cpu) {
+		this.cpu = cpu;
+	}
+
+	public void setRam(String ram) {
+		this.ram = ram;
+	}
+
+	public void setHardDrive(String hardDrive) {
+		this.hardDrive = hardDrive;
+	}
+
+	public void setScreen(String screen) {
+		this.screen = screen;
+	}
+
+	public void setOs(String os) {
+		this.os = os;
+	}
+
+	public void setWeight(String weight) {
+		this.weight = weight;
+	}
+
+	public void setScreenCard(String screenCard) {
+		this.screenCard = screenCard;
+	}
+
+	public void setChip(String chip) {
+		this.chip = chip;
+	}
+
+	public void setDiskSpace(String diskSpace) {
+		this.diskSpace = diskSpace;
+	}
+
+	public void setSim(String sim) {
+		this.sim = sim;
+	}
+
+	public void setFrontCamera(String frontCamera) {
+		this.frontCamera = frontCamera;
+	}
+
+	public void setBackCamera(String backCamera) {
+		this.backCamera = backCamera;
+	}
+
+	public void setPin(String pin) {
+		this.pin = pin;
+	}
+
+	public void setTimeContinuousUse(String timeContinuousUse) {
+		this.timeContinuousUse = timeContinuousUse;
+	}
+
+	public void setConnectWithOS(String connectWithOS) {
+		this.connectWithOS = connectWithOS;
+	}
+
+	public void setTimeEarPhone(String timeEarPhone) {
+		this.timeEarPhone = timeEarPhone;
+	}
+
+	public void setTimeChargeBox(String timeChargeBox) {
+		this.timeChargeBox = timeChargeBox;
+	}
+
+	public void setChargePort(String chargePort) {
+		this.chargePort = chargePort;
+	}
+
+	public void setConnectSupport(String connectSupport) {
+		this.connectSupport = connectSupport;
+	}
+
+	public void setClockFace(String clockFace) {
+		this.clockFace = clockFace;
+	}
+
+	public void setProducts(Set<Product> products) {
+		this.products = products;
+	}
+
+	public Long getId() {
+		return this.id;
+	}
+
+	public String getCpu() {
+		return this.cpu;
+	}
+
+	public String getRam() {
+		return this.ram;
+	}
+
+	public String getHardDrive() {
+		return this.hardDrive;
+	}
+
+	public String getScreen() {
+		return this.screen;
+	}
+
+	public String getOs() {
+		return this.os;
+	}
+
+	public String getWeight() {
+		return this.weight;
+	}
+
+	public String getScreenCard() {
+		return this.screenCard;
+	}
+
+	public String getChip() {
+		return this.chip;
+	}
+
+	public String getDiskSpace() {
+		return this.diskSpace;
+	}
+
+	public String getSim() {
+		return this.sim;
+	}
+
+	public String getFrontCamera() {
+		return this.frontCamera;
+	}
+
+	public String getBackCamera() {
+		return this.backCamera;
+	}
+
+	public String getPin() {
+		return this.pin;
+	}
+
+	public String getTimeContinuousUse() {
+		return this.timeContinuousUse;
+	}
+
+	public String getConnectWithOS() {
+		return this.connectWithOS;
+	}
+
+	public String getTimeEarPhone() {
+		return this.timeEarPhone;
+	}
+
+	public String getTimeChargeBox() {
+		return this.timeChargeBox;
+	}
+
+	public String getChargePort() {
+		return this.chargePort;
+	}
+
+	public String getConnectSupport() {
+		return this.connectSupport;
+	}
+
+	public String getClockFace() {
+		return this.clockFace;
+	}
+
+	public Set<Product> getProducts() {
+		return this.products;
+	}
 }
