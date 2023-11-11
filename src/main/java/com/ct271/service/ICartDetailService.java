@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ICartDetailService {
 
     //thêm sản phẩm vào giỏ hàng
-    public void addToCart(Long cart_id, Long product_id);
+    public void addToCart(Long cart_id, Long product_id,String date);
 
     //Tìm kiếm cart qua id
     public Optional<CartDetail> findById(CartDetailKey id);
@@ -26,4 +26,9 @@ public interface ICartDetailService {
 
     //Tính tổng tiền của tất cả sản phẩm theo cart_id
     public Long totalPriceOfCartId(Long cart_id);
+
+    //Xóa tất cả cartDetail với productid
+    public void deleteAllByProductId(Long product_id);
+
+    public void updateCartDetail(Long product_id);
 }

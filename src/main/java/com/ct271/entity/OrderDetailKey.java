@@ -15,6 +15,7 @@ public class OrderDetailKey implements Serializable {
     Long orderId;
 
     public OrderDetailKey() {
+        super();
     }
 
     public OrderDetailKey(Long productId, Long orderId) {

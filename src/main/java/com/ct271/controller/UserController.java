@@ -4,6 +4,7 @@ package com.ct271.controller;
 
 import com.ct271.entity.User;
 import com.ct271.request.RegisterRequest;
+import com.ct271.service.IOrderService;
 import com.ct271.service.IProductService;
 import com.ct271.service.IUserService;
 import jakarta.servlet.http.HttpSession;
@@ -28,43 +29,13 @@ public class UserController {
 	private final IUserService iUserService;
 	private final IProductService iProductService;
 
-	public UserController(IUserService iUserService, IProductService iProductService) {
+	private final IOrderService iOrderService;
+
+	public UserController(IUserService iUserService, IProductService iProductService, IOrderService iOrderService) {
 		this.iUserService = iUserService;
 		this.iProductService = iProductService;
+		this.iOrderService = iOrderService;
 	}
-
-	//Hiển thị form đăng ký
-	@GetMapping("/register")
-	public String showRegister(Model model) {
-		model.addAttribute("registerrequest", new RegisterRequest("", "", "", "", ""));
-		return "AdminPage/register";
-	}
-
-	//Xử lý đăng ký
-	@PostMapping("/register")
-	public String submitFormRegister(Model model,
-									 @Valid @ModelAttribute("registerrequest") RegisterRequest registerRequest, BindingResult result) {
-		//Tạo đối tượng newuser với thông tin nhập vào
-		User newuser = new User(registerRequest.username(), registerRequest.email(), registerRequest.phone(),
-				registerRequest.address(), registerRequest.password(), 1);
-		//Xử lí tài khoản đã tồn tại
-		if (iUserService.userRegister(newuser) == null && !result.hasErrors()) {
-			model.addAttribute("messageError", "Tài khoản đã tồn tại");
-			return "AdminPage/register";
-		}
-		//Xử lý khi có lỗi sảy ra khi nhập được định nghĩa ở /request/RegisterRequest
-		if (result.hasErrors()) {
-			model.addAttribute("messageError", "Vui lòng nhập đúng các thông tin");
-			return "AdminPage/register";
-		}
-		//Lưu user vào database
-		iUserService.addUser(newuser);
-		//Hiển thị đăng ký thành công
-		model.addAttribute("messageSuccess", "Đăng ký tài khoản thành công");
-		model.addAttribute("registerrequest", new RegisterRequest("", "", "", "", ""));
-		return "AdminPage/register";
-	}
-
 	//Hiển thị form login
 	@GetMapping("/login")
 	public String showLogin(User user, Model model) {
@@ -140,8 +111,10 @@ public class UserController {
 				//Hiển thị tổng số user và product trong trang overview
 				long users = iUserService.getTotalElement();
 				long products = iProductService.getTotalElement();
+				long orders = iOrderService.getTotalElement();
 				model.addAttribute("allUsers", users);
 				model.addAttribute("allProducts", products);
+				model.addAttribute("allOrders", orders);
 				model.addAttribute("namePage", "overview");
 				return "AdminPage/index";
 			}

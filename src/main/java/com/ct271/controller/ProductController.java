@@ -5,15 +5,15 @@ package com.ct271.controller;
 import com.ct271.DeleteFile;
 import com.ct271.FileUploadUtil;
 import com.ct271.entity.Configure;
+import com.ct271.entity.Orders;
 import com.ct271.entity.Product;
 import com.ct271.entity.ProductImage;
-import com.ct271.service.IConfigureService;
-import com.ct271.service.IProductImageService;
-import com.ct271.service.IProductService;
+import com.ct271.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -34,10 +34,16 @@ public class ProductController {
 
 	private final IProductImageService iProductImageService;
 
-	public ProductController(IProductService iProductService, IConfigureService iConfigureService, IProductImageService iProductImageService) {
+	private final IOrderService iOrderService;
+
+	private final ICartDetailService iCartDetailService;
+
+	public ProductController(IProductService iProductService, IConfigureService iConfigureService, IProductImageService iProductImageService, IOrderService iOrderService, ICartDetailService iCartDetailService) {
 		this.iProductService = iProductService;
 		this.iConfigureService = iConfigureService;
 		this.iProductImageService = iProductImageService;
+		this.iOrderService = iOrderService;
+		this.iCartDetailService = iCartDetailService;
 	}
 
 	//Xử lý hiện form thêm từng loại sản phẩm khi truy cập vào /product/category
@@ -108,6 +114,8 @@ public class ProductController {
 		product.setConfigure(configure);
 		//Set loại sản phẩm
 		product.setCategoryName(namePage);
+		//Set trạng thái xóa(chua xoa)
+		product.setIsDeleted(0);
 		//Set avatar của sản phẩm
 		product.setImageProductInfor(imageInfor.getOriginalFilename());
 		//Lưu sản phẩm vào trong cơ sở dữ liệu
@@ -200,6 +208,53 @@ public class ProductController {
 		return "redirect:/login";
 	}
 
+	@GetMapping("/listorders")
+	public String listOrders(Model model, @RequestParam("namePage") String namePage,
+							 @RequestParam("p") Optional<Integer> p, HttpSession session){
+		long orders = iOrderService.getTotalElement();
+		int numberElementOfPage = 5;
+		int numberPage = (int) orders / numberElementOfPage;
+		if (numberPage <= 1) {
+			//Nên lúc này số trang là 1
+			numberPage = 1;
+		}
+		//Phải có session admin thì mới cho phép vào
+		if (session.getAttribute("admin") != null) {
+			//Phân trang
+			Pageable pageable = PageRequest.of(p.orElse(0), numberElementOfPage,
+					Sort.by("date").descending());
+			Page<Orders> page = iOrderService.findAll(pageable);
+			//Tạo mảng để xử lý phân trang
+			int[] numberPageArr = new int[numberPage];
+			for (int i = 0; i < numberPage; i++) {
+				numberPageArr[i] = i;
+			}
+			//Mảng để xử li chuyển trang
+			model.addAttribute("numberPage", numberPageArr);
+			//Hiển thị tổng số order
+			model.addAttribute("allOrders", orders);
+			//Để thymeleaf biết replace component
+			model.addAttribute("namePage", namePage);
+			//Trang chứa các sản phẩm mà người dùng yêu cầu qua param p
+			model.addAttribute("listOrders", page);
+			//Page hiện tại đang ở
+			model.addAttribute("currentPage", p.get());
+			return "AdminPage/index";
+		}
+		return "redirect:/login";
+	}
+
+	@GetMapping("listorders/orderdetail")
+	public String getOrderDetail(Model model, @RequestParam("namePage") String namePage,
+								 @RequestParam("id") Long id, HttpSession session){
+		if (session.getAttribute("admin") != null) {
+			Optional<Orders> orders = iOrderService.getOrder(id);
+			model.addAttribute("namePage", namePage);
+			model.addAttribute("orderdetail", orders.get().getOrderDetails());
+			return "AdminPage/index";
+		}
+		return "redirect:/login";
+	}
 	//Xóa product
 	@GetMapping("/listproducts/delete/{id}")
 	public String deleteProduct(@PathVariable("id") Long id, HttpSession session) throws IOException {
@@ -208,6 +263,19 @@ public class ProductController {
 			//Tiến hành xóa product
 			iProductService.deleteProduct(id);
 			return "redirect:/listproducts?namePage=products&p=0";
+		}
+		return "redirect:/login";
+	}
+
+	@GetMapping("/listorders/check/{id}")
+	public String checkOrder(@PathVariable("id") Long id, HttpSession session) throws IOException {
+		//Xác thực là tài khoản admin thực hiện
+		if (session.getAttribute("admin") != null) {
+			//Tiến hành xóa product
+			Optional<Orders> orders = iOrderService.getOrder(id);
+			orders.get().setStatus(1);
+			iOrderService.save(orders.get());
+			return "redirect:/listorders?namePage=listorders&p=0";
 		}
 		return "redirect:/login";
 	}
@@ -276,6 +344,7 @@ public class ProductController {
 		}
 		//Chỉnh sửa thông tin sản phẩm nếu có thực hiện ở /service/ProductServiceImpl
 		iProductService.updateProduct(id, product);
+        iCartDetailService.updateCartDetail(id);
 		//Xử lý nếu có thêm ảnh detail, phần này xử lý tương tự như việc chỉnh sửa ảnh infor
 		if (photos.length > 1) {
 			iProductImageService.deleteImage(product);

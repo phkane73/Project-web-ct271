@@ -13,4 +13,6 @@ import java.util.List;
 public interface IProductRepo extends JpaRepository<Product, Long>{
     public Page<Product> findAllByCategoryName(String categoryName, Pageable page);
     public Page<Product> findAllByCategoryNameAndBrand(String categoryName, String brand, Pageable page);
+
+    public long countByIsDeleted(int x);
 }

@@ -1,5 +1,6 @@
 package com.ct271.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -20,6 +21,8 @@ public class Product {
 	private String categoryName;
 	private String imageProductInfor;
 
+	private int isDeleted;
+
 	@ManyToOne
 	@JoinColumn(name = "configure_id", referencedColumnName = "configure_id")
 	@JsonManagedReference
@@ -30,11 +33,11 @@ public class Product {
 	private Set<ProductImage> productImages;
 
 	@OneToMany(mappedBy = "product")
-	@JsonManagedReference
+	@JsonManagedReference(value = "cart_product")
 	private Set<CartDetail> cartDetails;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-	@JsonIgnore
+	@JsonBackReference
 	private Set<OrderDetail> orderDetails;
 
 	public Product() {
@@ -132,6 +135,14 @@ public class Product {
 
 	public void setCartDetails(Set<CartDetail> cartDetails) {
 		this.cartDetails = cartDetails;
+	}
+
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public Set<OrderDetail> getOrderDetails() {

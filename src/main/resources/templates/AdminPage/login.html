@@ -10,9 +10,9 @@
 </head>
 <body>
 	<div class="container">
-		<div class="row d-flex justify-content-center">
+		<div class="row d-flex justify-content-center align-items-center" style="height: 100vh">
 			<form class="col-md-5 mt-5" action="#" method="post"
-				th:action="@{/login}" th:object="${user}">
+				th:action="@{/login}" th:object="${user}" style="border: 1px solid; padding: 20px">
 				<h2 class="text-center">Đăng nhập</h2>
 				<div class="form-group">
 					<label for="exampleInputEmail1">Địa chỉ Email:</label> <input

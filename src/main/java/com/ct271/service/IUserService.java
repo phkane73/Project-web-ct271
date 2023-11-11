@@ -37,6 +37,8 @@ public interface IUserService {
 	//Sort
 	List<User> findAll(Sort sort);
 
+	public Optional<User> findById(Long user_id);
+
 	//Lấy ra số user
 	long getTotalElement();
 	

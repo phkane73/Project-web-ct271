@@ -2,21 +2,16 @@ package com.ct271.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
-import java.sql.Date;
+
 import java.util.Set;
 
 
 @Entity
-@Table(name = "order")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
-public class Order {
+@Table(name = "orders")
+public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
@@ -24,7 +19,7 @@ public class Order {
 
     private String address;
 
-    private Date date;
+    private String date;
 
     @Column(name = "total_price")
     private Long totalPrice;
@@ -33,23 +28,32 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @JsonManagedReference
+    @JsonBackReference(value = "user_order")
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "order_value")
     private Set<OrderDetail> orderDetails;
 
-    public Order() {
+    public Orders() {
+        super();
     }
 
-    public Order(String address, Date date, Long totalPrice, Integer status, User user, Set<OrderDetail> orderDetails) {
+    public Orders(String address, String date, Long totalPrice, Integer status, User user, Set<OrderDetail> orderDetails) {
         this.address = address;
         this.date = date;
         this.totalPrice = totalPrice;
         this.status = status;
         this.user = user;
         this.orderDetails = orderDetails;
+    }
+
+    public Orders(String address, String date, Long totalPrice, Integer status, User user) {
+        this.address = address;
+        this.date = date;
+        this.totalPrice = totalPrice;
+        this.status = status;
+        this.user = user;
     }
 
     public Long getId() {
@@ -68,11 +72,11 @@ public class Order {
         this.address = address;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

@@ -2,7 +2,7 @@
 <head>
 </head>
 <body>
-	<div th:fragment="overview (allUsers)(allProducts)">
+	<div th:fragment="overview (allUsers)(allProducts)(allOrders)">
 		<div class="container-fluid">
 			<div class="row justify-content-around my-5 py-5">
 				<a href="/adminPage/page?p=0" class="col-md-3 card text-center"
@@ -22,15 +22,15 @@
 						<h4 th:text="${allProducts}" class="text-dark"></h4>
 					</div>
 				</a>
-				<div class="col-md-3 card text-center"
-					style="background-color: #F8F3F0; height: 300px">
+				<a href="/listorders?namePage=listorders&p=0"
+				   class="col-md-3 card text-center text-dark"
+					style="background-color: #F8F3F0; height: 300px;text-decoration: none">
 					<i class="fa-solid fa-list-check py-5" style="font-size: 100px;"></i>
 					<div>
-						<h3 class="card-title">Wait Check</h3>
-						<h4 th:text="${allUsers}"></h4>
+						<h3 class="card-title text-dark">Wait Check</h3>
+						<h4 th:text="${allOrders}"></h4>
 					</div>
-				</div>
-
+				</a>
 			</div>
 		</div>
 	</div>
@@ -105,7 +105,7 @@
 						-webkit-line-clamp: 1; border: none"></td>
 						<td th:text="${p.brand}" class="text-center"
 							style="line-height: 100px"></td>
-						<td th:text="${p.price}" class="text-center"
+						<td th:text="${#numbers.formatDecimal(p.price,0,'POINT',0,'POINT')}+đ" class="text-center"
 							style="line-height: 100px"></td>
 						<td th:text="${p.number}" class="text-center"
 							style="line-height: 100px"></td>
@@ -114,7 +114,7 @@
 						<td><img
 							th:src="@{'./images/' + ${p.id} + '/infor/' + ${p.imageProductInfor}}"
 							style="width: 100px; height: 100px;" /></td>
-						<td style="padding-top: 40px"><a
+						<td th:if="${p.isDeleted==0}" style="padding-top: 40px"><a
 							th:href="@{/listproducts/update(namePage=${p.categoryName},id=${p.id})}"
 							class="btn btn-primary">Sửa</a>
 							<button class="btn btn-danger delete" data-toggle="modal"
@@ -138,6 +138,10 @@
 									</div>
 								</div>
 							</div></td>
+						<td th:if="${p.isDeleted==1}" style="padding-top: 40px">
+							<div class="btn btn-danger check disabled" data-toggle="modal"
+							>Ngưng bán</div>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -165,6 +169,122 @@
 							class="fa-solid fa-angles-right"></i></a></li>
 				</ul>
 			</nav>
+		</div>
+	</div>
+	<div th:fragment="listorders">
+		<div class="container mb-4">
+			<div class="row"></div>
+			<table class="table table-striped" border="1" style="width: 1150px";>
+				<thead class="thead-dark">
+				<tr>
+					<th style="color: #3edbf0" class="text-center">STT</th>
+					<th style="color: #3edbf0" class="text-center">Tên khách hàng</th>
+					<th style="color: #3edbf0" class="text-center">Mã khách hàng</th>
+					<th style="color: #3edbf0 " class="text-center">Địa chỉ</th>
+					<th style="color: #3edbf0" class="text-center">Ngày đặt hàng</th>
+					<th style="color: #3edbf0" class="text-center">Tổng giá đơn hàng</th>
+					<th style="color: #3edbf0" class="text-center">Action</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="p, index: ${listOrders}">
+					<td th:text="${index.count}" class="text-center"
+						style="line-height: 100px"></td>
+					<td th:text="${p.user.username}" class="text-center"
+						style="line-height: 100px"></td>
+					<td th:text="${p.user.phone}" class="text-center"
+						style="line-height: 100px"></td>
+					<td th:text="${p.address}" class="text-center" style="line-height: 100px;
+						display: -webkit-box;overflow: hidden;-webkit-box-orient: vertical;
+						-webkit-line-clamp: 1; border: none"></td>
+					<td th:text="${p.date}" class="text-center"
+						style="line-height: 100px"></td>
+					<td th:text="${#numbers.formatDecimal(p.totalPrice,0,'POINT',0,'POINT')}+đ" class="text-center"
+						style="line-height: 100px"></td>
+					<td style="padding-top: 40px; text-align: center">
+						<a th:href="@{/listorders/orderdetail(namePage='orderdetail',id=${p.id})}"
+							class="btn btn-primary">Chi tiết</a>
+						<button class="btn btn-danger check" data-toggle="modal"
+								data-target="#myModal" th:data-id="${p.id}" th:if="${p.status==0}"
+						>Duyệt</button>
+						<div class="btn btn-danger check disabled" data-toggle="modal" th:if="${p.status==1}"
+						>Đã duyệt</div>
+						<div id="myModal" class="modal fade" role="dialog">
+							<div class="modal-dialog" role="document">
+								<!-- Modal content-->
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title"></h4>
+									</div>
+									<div class="modal-body">
+										<p>Kiểm tra kĩ thông tin trước khi duyệt đơn</p>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-primary"
+												data-dismiss="modal">Cancel</button>
+										<a class="btn btn-danger submit">Duyệt đơn</a>
+									</div>
+								</div>
+							</div>
+						</div></td>
+				</tr>
+				</tbody>
+			</table>
+			<span th:text="'Total rows:' + ' ' + ${allOrders}"></span>
+			<nav aria-label="Page navigation example"
+				 th:unless="(${listOrders.getTotalPages()}<=1)">
+				<ul class="pagination justify-content-end">
+					<li class="page-item"><a class="page-link text-dark"
+											 th:href="@{/listorders(namePage='listorders',p=${currentPage}-1)}"
+											 th:if="${currentPage>0}"><i class="fa-solid fa-angles-left"></i></a>
+					</li>
+					<th:block th:each="page : ${numberPage}">
+						<li class="page-item"><a class="page-link text-dark"
+												 th:href="@{/listorders(namePage='listorders',p=${page})}" th:text="${page}"
+												 th:if="${page>0}"></a> <a class="page-link text-dark"
+																		   th:href="@{/listorders(namePage='listorders',p=${page})}" th:if="${page==0}">First</a>
+						</li>
+					</th:block>
+					<li class="page-item"><a class="page-link text-dark"
+											 th:href="@{/listorders(namePage='listorders',p=${listOrders.getTotalPages()-1})}">Last</a>
+					</li>
+					<li class="page-item"><a class="page-link text-dark"
+											 th:href="@{/listorders(namePage='listorders',p=${currentPage}+1)}"
+											 th:unless="${currentPage} == ${listOrders.getTotalPages()-1}"> <i
+							class="fa-solid fa-angles-right"></i></a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	<div th:fragment="orderdetail">
+		<a href="/listorders?namePage=listorders&p=0" class="fa-regular fa-circle-xmark text-dark"
+		style="font-size: 35px; text-decoration: none; margin-left: 30px"></a>
+		<div class="container mb-4">
+			<div class="row"></div>
+			<table class="table table-striped" border="1" style="width: 1150px";>
+				<thead class="thead-dark">
+				<tr>
+					<th style="color: #3edbf0;width: 100px;" class="text-center">Ảnh</th>
+					<th style="color: #3edbf0" class="text-center">Tên sản phẩm</th>
+					<th style="color: #3edbf0" class="text-center">Số lượng</th>
+					<th style="color: #3edbf0" class="text-center">Tổng giá</th>
+
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="p, index: ${orderdetail}">
+					<td><img
+							th:src="@{'../images/' + ${p.product.id} + '/infor/' + ${p.product.imageProductInfor}}"
+							style="width: 100px; height: 100px; text-align: center" /></td>
+					<td th:text="${p.product.productName}" class="text-center"
+						style="line-height: 100px"></td>
+					<td th:text="${p.number}" class="text-center"
+						style="line-height: 100px"></td>
+					<td th:text="${#numbers.formatDecimal(p.totalPriceOne,0,'POINT',0,'POINT')}+đ" class="text-center"
+						style="line-height: 100px"></td>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<div class="container" th:fragment="listusers">

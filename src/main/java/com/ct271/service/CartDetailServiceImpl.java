@@ -7,6 +7,9 @@ import com.ct271.entity.Product;
 import com.ct271.repository.ICartDetailRepo;
 import com.ct271.repository.ICartRepo;
 import com.ct271.repository.IProductRepo;
+import jakarta.transaction.Transactional;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,7 +66,22 @@ public class CartDetailServiceImpl implements ICartDetailService{
     }
 
     @Override
-    public void addToCart(Long cart_id, Long product_id) {
+    public void deleteAllByProductId(Long product_id) {
+        iCartDetailRepo.deleteAllByProductId(product_id);
+    }
+
+    @Override
+    public void updateCartDetail(Long product_id) {
+        Optional<Product> product = iProductRepo.findById(product_id);
+        List<CartDetail> cartDetails = iCartDetailRepo.findAllByProductId(product_id);
+        for(CartDetail cartDetail : cartDetails){
+            cartDetail.setTotalPrice(new Long(product.get().getPrice()*cartDetail.getNumberCart()));
+            iCartDetailRepo.save(cartDetail);
+        }
+    }
+
+    @Override
+    public void addToCart(Long cart_id, Long product_id, String date) {
         Optional<Cart> cart = iCartRepo.findById(cart_id);
         Optional<Product> product = iProductRepo.findById(product_id);
         CartDetailKey cartDetailKey = new CartDetailKey(product_id,cart_id);
@@ -72,6 +90,7 @@ public class CartDetailServiceImpl implements ICartDetailService{
             int number = cartDetailOld.get().getNumberCart()+1;
             cartDetailOld.get().setNumberCart(number);
             cartDetailOld.get().setTotalPrice(new Long(product.get().getPrice())*number);
+            cartDetailOld.get().setDate(date);
             iCartDetailRepo.save(cartDetailOld.get());
         }else{
             CartDetail cartDetail = new CartDetail();
@@ -79,6 +98,7 @@ public class CartDetailServiceImpl implements ICartDetailService{
             cartDetail.setCart(cart.get());
             cartDetail.setNumberCart(1);
             cartDetail.setProduct(product.get());
+            cartDetail.setDate(date);
             cartDetail.setTotalPrice(new Long(product.get().getPrice()));
             iCartDetailRepo.save(cartDetail);
         }

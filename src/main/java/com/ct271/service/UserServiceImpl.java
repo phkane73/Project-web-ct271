@@ -31,8 +31,9 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public User addUser(User user) {
 		User newuser = new User(user.getUsername(), user.getEmail(), user.getPhone(), user.getAddress(),
-				Encrypt.toSHA1(user.getPassword()), user.getRole());
+				Encrypt.toSHA512(user.getPassword()));
 		Cart cart = new Cart();
+		newuser.setRole(1);
 		cart.setUser(newuser);
 		iCartRepo.save(cart);
 		return userRepo.save(newuser);
@@ -51,7 +52,7 @@ public class UserServiceImpl implements IUserService {
 	public User userLogin(User user) {
 		User u = userRepo.findByEmail(user.getEmail());
 		if (u != null) {
-			if (u.getPassword().equals(Encrypt.toSHA1(user.getPassword()))) {
+			if (u.getPassword().equals(Encrypt.toSHA512(user.getPassword()))) {
 				return u;
 			}
 		}
@@ -76,6 +77,12 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public List<User> findAll(Sort sort) {
 		return userRepo.findAll(sort);
+	}
+
+	@Override
+	public Optional<User> findById(Long user_id) {
+		Optional<User> user = userRepo.findById(user_id);
+		return user;
 	}
 
 	@Override

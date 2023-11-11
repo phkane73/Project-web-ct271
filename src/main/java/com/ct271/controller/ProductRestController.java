@@ -1,13 +1,14 @@
 package com.ct271.controller;
 //Controller cung cấp tài nguyên cho restAPI về product
 
-import com.ct271.entity.Cart;
-import com.ct271.entity.CartDetail;
-import com.ct271.entity.CartDetailKey;
-import com.ct271.entity.Product;
+import com.ct271.entity.*;
 import com.ct271.repository.ICartRepo;
+import com.ct271.repository.IOrderDetailRepo;
 import com.ct271.service.ICartDetailService;
+import com.ct271.service.IOrderService;
 import com.ct271.service.IProductService;
+import com.ct271.service.IUserService;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 @CrossOrigin(origins = "*")
 @RequestMapping("/products")
 @RestController
@@ -30,11 +32,20 @@ public class ProductRestController {
 
     private final ICartRepo iCartRepo;
 
+    private final IUserService iUserService;
 
-    public ProductRestController(IProductService iProductService, ICartDetailService iCartDetailService, ICartRepo iCartRepo) {
+    private final IOrderService iOrderService;
+
+    private final IOrderDetailRepo iOrderDetailRepo;
+
+
+    public ProductRestController(IProductService iProductService, ICartDetailService iCartDetailService, ICartRepo iCartRepo, IUserService iUserService, IOrderService iOrderService, IOrderDetailRepo iOrderDetailRepo) {
         this.iProductService = iProductService;
         this.iCartDetailService = iCartDetailService;
         this.iCartRepo = iCartRepo;
+        this.iUserService = iUserService;
+        this.iOrderService = iOrderService;
+        this.iOrderDetailRepo = iOrderDetailRepo;
     }
 
     //API trả về client tất cả sản phẩm
@@ -101,18 +112,24 @@ public class ProductRestController {
 
     @GetMapping("/addtocart")
     public ResponseEntity<?> addToCart(@RequestParam("cart_id") Long cart_id,
-                                       @RequestParam("product_id") Long product_id){
-        iCartDetailService.addToCart(cart_id,product_id);
+                                       @RequestParam("product_id") Long product_id,
+                                        @RequestParam("date") String date){
+        iCartDetailService.addToCart(cart_id,product_id,date);
         return new ResponseEntity<>("Thêm vào giỏ hàng thành công", HttpStatus.OK);
     }
 
     @GetMapping("/allcart")
+    @Transactional
     public ResponseEntity<?> showCart(@RequestParam("cart_id") Long cart_id){
         List<CartDetail> cartDetails = iCartDetailService.getAllCartDetail(cart_id);
         List<Optional<Product>> products = new ArrayList<>();
         for(CartDetail cartDetail : cartDetails){
             Optional<Product> product = iProductService.getProduct(cartDetail.getProduct().getId());
-            products.add(product);
+            if (product.get().getNumber()>0){
+                products.add(product);
+            }else{
+                iCartDetailService.deleteAllByProductId(product.get().getId());
+            }
         }
         return new ResponseEntity<List<Optional<Product>>>(products,HttpStatus.OK);
     }
@@ -130,7 +147,6 @@ public class ProductRestController {
 
     @GetMapping("/getnumbercart")
     public ResponseEntity<?> getNumberCart(@RequestParam("cart_id") Long cart_id){
-        System.out.println(cart_id);
         Integer number = iCartDetailService.count(cart_id);
         return new ResponseEntity<>(number, HttpStatus.OK);
     }
@@ -141,9 +157,11 @@ public class ProductRestController {
         CartDetailKey cartDetailKey = new CartDetailKey(product_id,cart_id);
         Optional<CartDetail> cartDetail = iCartDetailService.findById(cartDetailKey);
         Optional<Product> product = iProductService.getProduct(product_id);
-        Integer number = cartDetail.get().getNumberCart()+1;
-        cartDetail.get().setNumberCart(number);
-        cartDetail.get().setTotalPrice(new Long(product.get().getPrice())*number);
+        if(cartDetail.get().getNumberCart()<product.get().getNumber()){
+            int number = cartDetail.get().getNumberCart()+1;
+            cartDetail.get().setNumberCart(number);
+            cartDetail.get().setTotalPrice(new Long(product.get().getPrice())*number);
+        }
         iCartDetailService.save(cartDetail.get());
         return new ResponseEntity<>(cartDetail, HttpStatus.OK);
     }
@@ -168,4 +186,41 @@ public class ProductRestController {
         return new ResponseEntity<>(total, HttpStatus.OK);
     }
 
+    @GetMapping("/addtoorder")
+    public ResponseEntity<?> addToOrder(@RequestParam("user_id") Long user_id,
+                                        @RequestParam("totalprice") Long total_price,
+                                        @RequestParam("date") String date,
+                                        @RequestParam("address") String address
+                                        ){
+        Optional<User> user = iUserService.findById(user_id);
+        System.out.println(user.get().getId());
+
+        Orders orders = new Orders(address, date, total_price, 0, user.get());
+        iOrderService.save(orders);
+        Cart cart = iCartRepo.findCartByUserId(user_id);
+        List<CartDetail> cartDetails = iCartDetailService.getAllCartDetail(cart.getId());
+        List<Optional<Product>> products = new ArrayList<>();
+        for(CartDetail cartDetail : cartDetails){
+            Optional<Product> product = iProductService.getProduct(cartDetail.getProduct().getId());
+            OrderDetail orderDetail = new OrderDetail();
+            OrderDetailKey orderDetailKey = new OrderDetailKey(product.get().getId(), orders.getId());
+            orderDetail.setId(orderDetailKey);
+            orderDetail.setProduct(product.get());
+            orderDetail.setOrder(orders);
+            orderDetail.setNumber(cartDetail.getNumberCart());
+            orderDetail.setTotalPriceOne(cartDetail.getTotalPrice());
+            iOrderDetailRepo.save(orderDetail);
+            int number = product.get().getNumber()-cartDetail.getNumberCart();
+            product.get().setNumber(product.get().getNumber()-cartDetail.getNumberCart());
+            iProductService.addProduct(product.get());
+            iCartDetailService.deleteCartDetail(cartDetail.getId());
+        }
+        return new ResponseEntity<>("Order Success", HttpStatus.OK);
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<?> showOrderList(@RequestParam("user_id") Long user_id){
+        List<Orders> orders = iOrderService.getAllOrderByUserId(user_id);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
 }

@@ -1,6 +1,8 @@
 package com.ct271.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,14 +15,14 @@ public class OrderDetail {
     @ManyToOne
     @MapsId("productId")
     @JoinColumn(name = "product_id")
-    @JsonBackReference
+    @JsonManagedReference
     private Product product;
 
     @ManyToOne
     @MapsId("orderId")
     @JoinColumn(name = "order_id")
-    @JsonBackReference
-    private Order order;
+    @JsonBackReference(value = "order_value")
+    private Orders order;
 
     private Integer number;
 
@@ -30,7 +32,7 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(Product product, Order order, Integer number, Long totalPriceOne) {
+    public OrderDetail(Product product, Orders order, Integer number, Long totalPriceOne) {
         this.product = product;
         this.order = order;
         this.number = number;
@@ -53,11 +55,11 @@ public class OrderDetail {
         this.product = product;
     }
 
-    public Order getOrder() {
+    public Orders getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(Orders order) {
         this.order = order;
     }
 

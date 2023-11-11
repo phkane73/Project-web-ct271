@@ -15,7 +15,6 @@ public class Cart {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @JsonManagedReference
     private User user;
 
     @OneToMany(mappedBy = "cart")

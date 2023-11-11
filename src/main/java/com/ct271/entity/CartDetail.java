@@ -12,7 +12,7 @@ public class CartDetail {
     @ManyToOne
     @MapsId("productId")
     @JoinColumn(name = "product_id")
-    @JsonBackReference
+    @JsonBackReference(value = "cart_product")
     private Product product;
 
     @ManyToOne
@@ -24,6 +24,8 @@ public class CartDetail {
     private int numberCart;
 
     private Long totalPrice;
+
+    private String date;
 
     public CartDetail() {
     }
@@ -76,6 +78,14 @@ public class CartDetail {
 
     public Long getTotalPrice() {
         return totalPrice;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public void setTotalPrice(Long totalPrice) {

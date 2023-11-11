@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Encrypt {
 
-	public static String toSHA1(String str) {
+	public static String toSHA512(String str) {
 		//Chuỗi ramdom để tăng tính bảo mật cho mật khẩu
 		String salt = "dfhash9qkhjasohdfsa@abd";
 		String result = null;

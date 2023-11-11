@@ -61,23 +61,15 @@ public class ProductServiceImpl implements IProductService {
 
 	@Override
 	public long getTotalElement() {
-		return iProductRepo.count();
+		return iProductRepo.countByIsDeleted(0);
 	}
 
 	@Override
 	public boolean deleteProduct(Long id) {
 		Optional<Product> product = iProductRepo.findById(id);
-		if (product != null) {
-			String pathImageInforProductBE = "./src/main/resources/static/images/" + id + "/infor/";
-			DeleteFile.deleteFile(pathImageInforProductBE);
-			String pathImageInforProductFE = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/" + id + "/infor/";
-			DeleteFile.deleteFile(pathImageInforProductFE);
-			String pathImageProductBE = "./src/main/resources/static/images/" + id;
-			DeleteFile.deleteFile(pathImageProductBE);
-			String pathImageProductFE = "/NienLuan/frontendProjectCt271/projectCt271Fe/public/images/" + id;
-			DeleteFile.deleteFile(pathImageProductFE);
-			iProductRepo.deleteById(id);
-			iConfigureRepo.deleteById(product.get().getConfigure().getId());
+		if (product.isPresent()) {
+			product.get().setIsDeleted(1);
+			iProductRepo.save(product.get());
 			return true;
 		}
 		return false;
