@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface IOrderRepo extends JpaRepository<Orders,Long> {
 
-    public List<Orders> getAllByUserId(Long user_id);
+    public List<Orders> getAllByUserIdOrderByDateDesc(Long user_id);
 
     public long countByStatus(int status);
 }

@@ -120,6 +120,7 @@ public class ProductRestController {
 
     @GetMapping("/allcart")
     @Transactional
+    //Tra ve tat cac cart
     public ResponseEntity<?> showCart(@RequestParam("cart_id") Long cart_id){
         List<CartDetail> cartDetails = iCartDetailService.getAllCartDetail(cart_id);
         List<Optional<Product>> products = new ArrayList<>();
@@ -135,6 +136,7 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/deletecartdetail")
+    //Xoa san pham ra khoi cart
     public ResponseEntity<?> deleteCartDetail(@RequestParam("cart_id") Long cart_id,
                                               @RequestParam("product_id") Long product_id){
         CartDetailKey cartDetailKey = new CartDetailKey(product_id,cart_id);
@@ -146,12 +148,14 @@ public class ProductRestController {
     }
 
     @GetMapping("/getnumbercart")
+    //Lay so luong cart
     public ResponseEntity<?> getNumberCart(@RequestParam("cart_id") Long cart_id){
         Integer number = iCartDetailService.count(cart_id);
         return new ResponseEntity<>(number, HttpStatus.OK);
     }
 
     @GetMapping("/increase")
+    //Tang so luong san pham trong cart
     public ResponseEntity<?> increaseNumber(@RequestParam("cart_id") Long cart_id,
                                             @RequestParam("product_id") Long product_id){
         CartDetailKey cartDetailKey = new CartDetailKey(product_id,cart_id);
@@ -166,6 +170,7 @@ public class ProductRestController {
         return new ResponseEntity<>(cartDetail, HttpStatus.OK);
     }
     @GetMapping("/decrease")
+    //Giam so luong san pham trong cart
     public ResponseEntity<?> decreaseNumber(@RequestParam("cart_id") Long cart_id,
                                             @RequestParam("product_id") Long product_id){
         CartDetailKey cartDetailKey = new CartDetailKey(product_id,cart_id);
@@ -181,12 +186,14 @@ public class ProductRestController {
     }
 
     @GetMapping("/totalpricebycart")
+    //Tra ve tong tien cua gio hang
     public ResponseEntity<?> totalPriceByCart(@RequestParam("cart_id") Long cart_id){
         Long total =iCartDetailService.totalPriceOfCartId(cart_id);
         return new ResponseEntity<>(total, HttpStatus.OK);
     }
 
     @GetMapping("/addtoorder")
+    //Dat hang
     public ResponseEntity<?> addToOrder(@RequestParam("user_id") Long user_id,
                                         @RequestParam("totalprice") Long total_price,
                                         @RequestParam("date") String date,
@@ -219,6 +226,7 @@ public class ProductRestController {
     }
 
     @GetMapping("/orders")
+    //Hien thi don hang cua khach hang co user_id
     public ResponseEntity<?> showOrderList(@RequestParam("user_id") Long user_id){
         List<Orders> orders = iOrderService.getAllOrderByUserId(user_id);
         return new ResponseEntity<>(orders, HttpStatus.OK);

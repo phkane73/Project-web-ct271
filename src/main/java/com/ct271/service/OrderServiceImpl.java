@@ -27,7 +27,7 @@ public class OrderServiceImpl implements IOrderService{
 
     @Override
     public List<Orders> getAllOrderByUserId(Long user_id) {
-        return iOrderRepo.getAllByUserId(user_id);
+        return iOrderRepo.getAllByUserIdOrderByDateDesc(user_id);
     }
 
     @Override

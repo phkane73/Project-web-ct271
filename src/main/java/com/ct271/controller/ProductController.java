@@ -10,6 +10,7 @@ import com.ct271.entity.Product;
 import com.ct271.entity.ProductImage;
 import com.ct271.service.*;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -257,11 +258,13 @@ public class ProductController {
 	}
 	//Xóa product
 	@GetMapping("/listproducts/delete/{id}")
+	@Transactional
 	public String deleteProduct(@PathVariable("id") Long id, HttpSession session) throws IOException {
 		//Xác thực là tài khoản admin thực hiện
 		if (session.getAttribute("admin") != null) {
 			//Tiến hành xóa product
 			iProductService.deleteProduct(id);
+			iCartDetailService.deleteAllByProductId(id);
 			return "redirect:/listproducts?namePage=products&p=0";
 		}
 		return "redirect:/login";

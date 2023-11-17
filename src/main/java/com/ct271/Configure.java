@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class Configure implements WebMvcConfigurer{
 	
 	@Override
+	//Configure duong dan dat file anh
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
     	Path uploadDir = Paths.get("./src/main/resources/static/images/");
     	String uploadPath = uploadDir.toFile().getAbsolutePath();

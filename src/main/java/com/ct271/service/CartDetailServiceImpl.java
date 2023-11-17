@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CartDetailServiceImpl implements ICartDetailService{
+public class CartDetailServiceImpl implements ICartDetailService {
 
     private final ICartDetailRepo iCartDetailRepo;
 
     private final ICartRepo iCartRepo;
 
-    private  final IProductRepo iProductRepo;
+    private final IProductRepo iProductRepo;
 
     public CartDetailServiceImpl(ICartDetailRepo iCartDetailRepo, ICartRepo iCartRepo, IProductRepo iProductRepo) {
         this.iCartDetailRepo = iCartDetailRepo;
@@ -30,13 +30,13 @@ public class CartDetailServiceImpl implements ICartDetailService{
         this.iProductRepo = iProductRepo;
     }
 
-    public Optional<CartDetail> findById(CartDetailKey id){
+    public Optional<CartDetail> findById(CartDetailKey id) {
         return iCartDetailRepo.findById(id);
     }
 
     @Override
     public List<CartDetail> getAllCartDetail(Long cart_id) {
-        return iCartDetailRepo.findAllByCartId(cart_id);
+        return iCartDetailRepo. getAllByCartIdOrderByDateDesc(cart_id);
     }
 
     @Override
@@ -56,43 +56,47 @@ public class CartDetailServiceImpl implements ICartDetailService{
     }
 
     @Override
+    //Lay ra tong tien tu cart_id
     public Long totalPriceOfCartId(Long cart_id) {
-        List<CartDetail> cartDetails = iCartDetailRepo.findAllByCartId(cart_id);
+        List<CartDetail> cartDetails = iCartDetailRepo. getAllByCartIdOrderByDateDesc(cart_id);
         long total = 0;
-        for(CartDetail cartDetail : cartDetails){
-             total = total + cartDetail.getTotalPrice();
+        for (CartDetail cartDetail : cartDetails) {
+            total = total + cartDetail.getTotalPrice();
         }
         return total;
     }
 
     @Override
+    //Xoa tat ca gio hang co san pham voi product_id
     public void deleteAllByProductId(Long product_id) {
         iCartDetailRepo.deleteAllByProductId(product_id);
     }
 
     @Override
+    // Cap nhat chi tiet gio hang
     public void updateCartDetail(Long product_id) {
         Optional<Product> product = iProductRepo.findById(product_id);
         List<CartDetail> cartDetails = iCartDetailRepo.findAllByProductId(product_id);
-        for(CartDetail cartDetail : cartDetails){
-            cartDetail.setTotalPrice(new Long(product.get().getPrice()*cartDetail.getNumberCart()));
+        for (CartDetail cartDetail : cartDetails) {
+            cartDetail.setTotalPrice(new Long(product.get().getPrice() * cartDetail.getNumberCart()));
             iCartDetailRepo.save(cartDetail);
         }
     }
 
     @Override
+    //Them san pham vao gio hang
     public void addToCart(Long cart_id, Long product_id, String date) {
         Optional<Cart> cart = iCartRepo.findById(cart_id);
         Optional<Product> product = iProductRepo.findById(product_id);
-        CartDetailKey cartDetailKey = new CartDetailKey(product_id,cart_id);
+        CartDetailKey cartDetailKey = new CartDetailKey(product_id, cart_id);
         Optional<CartDetail> cartDetailOld = iCartDetailRepo.findById(cartDetailKey);
-        if(cartDetailOld.isPresent()){
-            int number = cartDetailOld.get().getNumberCart()+1;
+        if (cartDetailOld.isPresent()) {
+            int number = cartDetailOld.get().getNumberCart() + 1;
             cartDetailOld.get().setNumberCart(number);
-            cartDetailOld.get().setTotalPrice(new Long(product.get().getPrice())*number);
+            cartDetailOld.get().setTotalPrice(new Long(product.get().getPrice()) * number);
             cartDetailOld.get().setDate(date);
             iCartDetailRepo.save(cartDetailOld.get());
-        }else{
+        } else {
             CartDetail cartDetail = new CartDetail();
             cartDetail.setId(cartDetailKey);
             cartDetail.setCart(cart.get());

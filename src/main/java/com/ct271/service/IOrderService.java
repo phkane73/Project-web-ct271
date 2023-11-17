@@ -18,9 +18,12 @@ public interface IOrderService {
     //Lấy ra tất cả order của user_id
     public List<Orders> getAllOrderByUserId(Long user_id);
 
+    //Tra ve tong so order
     public long getTotalElement();
 
+    //Phan trang voi order
     public Page<Orders> findAll(Pageable pageable);
 
+    //Lay ra mot order
     public Optional<Orders> getOrder(Long id);
 }

@@ -231,7 +231,6 @@
 				</tr>
 				</tbody>
 			</table>
-			<span th:text="'Total rows:' + ' ' + ${allOrders}"></span>
 			<nav aria-label="Page navigation example"
 				 th:unless="(${listOrders.getTotalPages()}<=1)">
 				<ul class="pagination justify-content-end">
@@ -378,20 +377,20 @@
 					<div class="d-flex justify-content-around">
 						<div class="custom-control custom-radio">
 							<input type="radio" class="custom-control-input" id="customRadio"
-								name="radio" value="Android" th:field="*{configure.os}">
+								name="radio" value="Android" th:field="*{configure.os}" required>
 							<label class="custom-control-label" for="customRadio">Android</label>
 						</div>
 						<div class="custom-control custom-radio">
 							<input type="radio" class="custom-control-input"
 								id="customRadio2" name="radio" value="iPadOS"
-								th:field="*{configure.os}"> <label
+								th:field="*{configure.os}" required> <label
 								class="custom-control-label" for="customRadio2">iPadOS</label>
 						</div>
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="">Số lượng:</label> <input type="text"
-						class="form-control" th:field="*{number}" style="width: 150px" onfocus="this.value='';"/>
+						class="form-control" th:field="*{number}" style="width: 150px" required onfocus="this.value='';"/>
 				</div>
 				<div class="form-group d-flex flex-column">
 					<label for="">Dung lượng lữu trữ:</label> <select name="diskSpace"
@@ -433,12 +432,12 @@
 					<div class="d-flex justify-content-around">
 						<div class="custom-control custom-radio">
 							<input type="radio" class="custom-control-input" id="sim1"
-								name="sim" value="có sim" th:field="*{configure.sim}"> <label
+								name="sim" value="có sim" th:field="*{configure.sim}" required> <label
 								class="custom-control-label" for="sim1">Có sim</label>
 						</div>
 						<div class="custom-control custom-radio">
 							<input type="radio" class="custom-control-input" id="sim2"
-								name="sim" value="không có sim" th:field="*{configure.sim}">
+								name="sim" value="không có sim" th:field="*{configure.sim}" required>
 							<label class="custom-control-label" for="sim2">Không có
 								sim</label>
 						</div>
@@ -869,7 +868,7 @@
 				</div>
 				<div class="form-group">
 					<label for="">Số lượng:</label> <input type="text"
-						class="form-control" th:field="*{number}" style="width: 150px;" onfocus="this.value='';"/>
+						class="form-control" th:field="*{number}" required style="width: 150px;" onfocus="this.value='';"/>
 				</div>
 				<div class="form-group d-flex flex-column">
 					<label for="">Hãng sản xuất:</label> <select name="cars"
@@ -1020,7 +1019,7 @@
 				</div>
 				<div class="form-group">
 					<label for="">Số lượng:</label> <input type="text"
-						class="form-control" th:field="*{number}" style="width: 150px" onfocus="this.value='';"/>
+						class="form-control" th:field="*{number}" required style="width: 150px" onfocus="this.value='';"/>
 				</div>
 				<div class="form-group d-flex flex-column">
 					<label for="">Hãng sản xuất:</label> <select name="cars"

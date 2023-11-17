@@ -3,18 +3,15 @@ package com.ct271.controller;
 //Controller đáp ứng tài nguyên cho template engine thymeleaf chạy server side rendering
 
 import com.ct271.entity.User;
-import com.ct271.request.RegisterRequest;
 import com.ct271.service.IOrderService;
 import com.ct271.service.IProductService;
 import com.ct271.service.IUserService;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;

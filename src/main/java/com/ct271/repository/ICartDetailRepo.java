@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ICartDetailRepo extends JpaRepository<CartDetail, CartDetailKey> {
 
-    public List<CartDetail> findAllByCartId(Long cart_id);
+    public List<CartDetail> getAllByCartIdOrderByDateDesc(Long cart_id);
 
     public List<CartDetail> findAllByProductId(Long product_id);
 
